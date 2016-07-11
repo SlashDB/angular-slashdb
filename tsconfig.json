@@ -1,0 +1,23 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "rootDir": "./src/",
+        "outDir": "./build/",
+        "sourceMap": false,
+        "pretty": true
+    },
+    "files": [
+        "typings/index.d.ts",
+        "src/angular-slashdb.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ]
+}
