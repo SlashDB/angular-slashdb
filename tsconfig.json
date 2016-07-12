@@ -7,7 +7,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "rootDir": "./src/",
-        "outDir": "./build/",
+        "outDir": "./dist/",
         "sourceMap": false,
         "pretty": true
     },

@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "typings install",
     "watch": "tsc -w",
-    "build-dist": "echo 'npm gives an error but all files build just fine - npm is weird that way...' && tsc --outDir ./dist/",
+    "watch-ex": "tsc --outDir ./example/lib/ -w",
+    "build": "tsc & tsc --outDir ./example/lib/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "SlashDB",
