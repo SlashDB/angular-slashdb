@@ -183,7 +183,6 @@
      */
     class SlashDBServiceProvider implements angular.IServiceProvider {
         config: ISlashDBConfig;
-        $get: any[];
 
         constructor() {
             this.config = {
@@ -206,10 +205,15 @@
         setHeaders(headers: angular.IHttpRequestConfigHeaders) {
             this.config.httpRequestConfig.headers = headers;
         }
+
+        $get($http: angular.IHttpService, $q: angular.IQService, $cookies: ng.cookies.ICookieStoreService, $rootScope: angular.IRootScopeService): SlashDBService {
+            let config: ISlashDBConfig = angular.copy(this.config);
+            return new SlashDBService($http, $q, $cookies, $rootScope, config);
+        }
     }
 
 
     angular.module('angularSlashDB', ['ngCookies'])
-        .provider('slashDBProvider', new SlashDBServiceProvider());
+        .provider('slashDB', new SlashDBServiceProvider());
 
 })();

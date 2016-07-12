@@ -141,8 +141,12 @@
         SlashDBServiceProvider.prototype.setHeaders = function (headers) {
             this.config.httpRequestConfig.headers = headers;
         };
+        SlashDBServiceProvider.prototype.$get = function ($http, $q, $cookies, $rootScope) {
+            var config = angular.copy(this.config);
+            return new SlashDBService($http, $q, $cookies, $rootScope, config);
+        };
         return SlashDBServiceProvider;
     }());
     angular.module('angularSlashDB', ['ngCookies'])
-        .provider('slashDBProvider', new SlashDBServiceProvider());
+        .provider('slashDB', new SlashDBServiceProvider());
 })();
