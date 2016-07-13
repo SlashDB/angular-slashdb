@@ -37,7 +37,7 @@
     class SlashDBService {
         $http: angular.IHttpService;
         $q: angular.IQService;
-        $cookies: ng.cookies.ICookieStoreService;
+        $cookies: angular.cookies.ICookiesService;
         $rootScope: angular.IRootScopeService;
 
         config: ISlashDBConfig;
@@ -45,7 +45,7 @@
         storage: Storage | ISlashDBStorage
 
         static $inject = ['$http', '$q', '$cookies', '$rootScope'];
-        constructor($http: angular.IHttpService, $q: angular.IQService, $cookies: ng.cookies.ICookieStoreService, $rootScope: angular.IRootScopeService, config: ISlashDBConfig) {
+        constructor($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService, config: ISlashDBConfig) {
             this.$http = $http;
             this.$q = $q;
             this.$cookies = $cookies;
@@ -256,7 +256,7 @@
             this.config.httpRequestConfig.params = params;
         }
 
-        $get($http: angular.IHttpService, $q: angular.IQService, $cookies: ng.cookies.ICookieStoreService, $rootScope: angular.IRootScopeService): SlashDBService {
+        $get($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService): SlashDBService {
             // returns a SlashDBService instance
             return new SlashDBService($http, $q, $cookies, $rootScope, this.config);
         }
