@@ -138,7 +138,8 @@
                         offset: 3
                     }
                 };
-                tableData.getData({ url: '/db/ciap/Artist.json', requestConfig: requestConfig, scope: $scope });
+                // change the 'examle' to your prefered database name
+                tableData.getData({ url: '/db/example/Artist.json', requestConfig: requestConfig, scope: $scope });
             }
         });
 })();
