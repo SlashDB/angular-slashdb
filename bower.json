@@ -3,12 +3,12 @@
   "description": "Angular provider for SlashDB.",
   "main": "",
   "authors": [
-    "SlashDB"
+    "vt.enterprise"
   ],
   "license": "MIT",
   "moduleType": [],
   "homepage": "",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",

@@ -10,7 +10,7 @@
     "build": "tsc & tsc --outDir ./example/lib/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "SlashDB",
+  "author": "vt.enterprise",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
