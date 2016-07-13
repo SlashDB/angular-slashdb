@@ -20,7 +20,7 @@
 
 
     /**
-     * Interface representing the shape of a SlashDB storage object.
+     * Interface representing the shape of a SlashDB dummy sessionStorage object.
      */
     interface ISlashDBStorage {
         data: {},
@@ -28,7 +28,7 @@
         setItem(key: string, value: any): void
     }
 
-    // Amgular Event type alias - for ease of use.
+    // Angular Event type alias - for ease of use.
     type AngularEventHandler = (event: angular.IAngularEvent, ...args: any[]) => any;
 
     /**
@@ -54,12 +54,12 @@
             this.config = config;
             this.settings = { user: '' };
 
-            // if authenticated then get init this.settings
+            // if authenticated, then init this.settings
             if (this.isAuthenticated() && this.settings.user == '') {
                 this.getSettings();
             }
 
-            // use window.sessionStorage if available else use a simple
+            // use window.sessionStorage if available else use a simple dummy sessionStorage object
             if (window.sessionStorage != null) {
                 this.storage = window.sessionStorage;
             } else {
@@ -87,7 +87,7 @@
         }
 
         subscribeLogin(scope: angular.IScope, callback: AngularEventHandler) {
-            // subscrive to a login envent
+            // subscribe to a login envent
             this.subscribe(scope, 'slashdb-service-login-event', callback);
         }
 
@@ -97,7 +97,7 @@
         }
 
         subscribeLogout(scope: angular.IScope, callback: AngularEventHandler) {
-            // subscrive to a logout envent
+            // subscribe to a logout envent
             this.subscribe(scope, 'slashdb-service-logout-event', callback);
         }
 
@@ -107,7 +107,7 @@
         }
 
         subscribeSettingsChange(scope: angular.IScope, callback: AngularEventHandler) {
-            // subscrive to a settings change envent
+            // subscribe to a settings change envent
             this.subscribe(scope, 'slashdb-service-settings-update-event', callback);
         }
 
@@ -117,6 +117,7 @@
         }
 
         getSettings(): angular.IPromise<any> {
+            // fetch settings object from slashDB instance
             let requetUrl: string = this.getUrl('/settings.json');
             return this.$http.get(requetUrl)
                 .then((response): ISlashDBSettings => {
@@ -127,6 +128,7 @@
         }
 
         login(user: string, password: string): angular.IPromise<any> {
+            // perform a login request
             let requetUrl: string = this.getUrl('/login');
 
             return this.$http.post(requetUrl, { login: user, password: password })
@@ -138,6 +140,7 @@
         }
 
         logout(): angular.IPromise<any> {
+            // perform a logout request
             let requetUrl: string = this.getUrl('/logout');
             return this.$http.get(requetUrl)
                 .finally((): angular.IPromise<any> => {
@@ -148,10 +151,18 @@
         }
 
         isAuthenticated(): boolean {
+            // check if a auth_tkt cookie is present
             return this.$cookies.get('auth_tkt') != null;
         }
 
-        executeQuery(url: string, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
+        private updateRequestConfig(userRequestConfig: {}): angular.IRequestShortcutConfig {
+            // this method allows the user to ad-hoc update request attributes i.e. headers, query params etc.
+            // for more see https://code.angularjs.org/1.5.7/docs/api/ng/service/$http#usage
+            return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);
+        }
+
+        executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
+            // execute SQL Pass-thru query
             let sdbUrl = `${this.config.endpoint}/query${url}`
             let promise: angular.IPromise<any> | angular.IHttpPromise<any>;
             let data: any;
@@ -162,7 +173,8 @@
                     resolve(data);
                 })
             } else {
-                promise = this.$http.get(sdbUrl, this.config.httpRequestConfig)
+                let requestConfig = this.updateRequestConfig(userRequestConfig);
+                promise = this.$http.get(sdbUrl, requestConfig)
                     .then(
                     (response): {} => {
                         data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
@@ -178,7 +190,7 @@
             return promise
         }
 
-        get(url: string, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
+        get(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
             // gets all your favorite resources
             let sdbUrl = this.getUrl(url);
             let promise: angular.IPromise<any> | angular.IHttpPromise<any>;
@@ -191,7 +203,8 @@
                 })
             } else {
                 // If 'asArray' set true this will always return data as an Array. Otherwise it will pick the first element of a given Array.
-                promise = this.$http.get(sdbUrl, this.config.httpRequestConfig)
+                let requestConfig = this.updateRequestConfig(userRequestConfig);
+                promise = this.$http.get(sdbUrl, requestConfig)
                     .then(
                     (response): {} => {
                         if (Array.isArray(response.data)) {
@@ -212,9 +225,18 @@
             return promise;
         }
 
-        post(url: string, data: any): angular.IHttpPromise<any> {
+        post(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<any> {
+            // sends new data to all your favorite resources
             let sdbUrl: string = this.getUrl(url);
-            return this.$http.post(sdbUrl, data, this.config.httpRequestConfig);
+            let requestConfig = this.updateRequestConfig(userRequestConfig);
+            return this.$http.post(sdbUrl, data, requestConfig);
+        }
+
+        put(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<any> {
+            // sends update data to all your favorite resources
+            let sdbUrl: string = this.getUrl(url);
+            let requestConfig = this.updateRequestConfig(userRequestConfig);
+            return this.$http.put(sdbUrl, data, requestConfig);
         }
     }
 
@@ -247,12 +269,12 @@
         }
 
         setHeaders(headers: angular.IHttpRequestConfigHeaders) {
-            // sets headers of your choice
+            // sets default headers of your choice
             this.config.httpRequestConfig.headers = headers;
         }
 
-        setParams(params: string | {}) {
-            // sets request params of your choice
+        setParams(params: {}) {
+            // sets default request params of your choice
             this.config.httpRequestConfig.params = params;
         }
 

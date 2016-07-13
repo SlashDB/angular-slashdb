@@ -79,7 +79,8 @@
                 },
                 getData: function (config) {
                     var setData = function () {
-                        slashDB.get(config.url).then(function (data) {
+                        // through config.requestConfig the developer can set additional, ad-hoc, request attributes
+                        slashDB.get(config.url, config.requestConfig).then(function (data) {
                             service.clearData();
                             [].push.apply(service.data, data);
                         });
@@ -130,7 +131,14 @@
                     tableData.clearData();
                 });
 
-                tableData.getData({ url: '/db/ciap/Artist.json?limit=50', scope: $scope });
+                var requestConfig = {
+                    params: {
+                        limit: 50,
+                        sort: 'Name',
+                        offset: 3
+                    }
+                };
+                tableData.getData({ url: '/db/ciap/Artist.json', requestConfig: requestConfig, scope: $scope });
             }
         });
 })();

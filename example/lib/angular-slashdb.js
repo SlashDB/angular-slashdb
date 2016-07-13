@@ -85,8 +85,12 @@
         SlashDBService.prototype.isAuthenticated = function () {
             return this.$cookies.get('auth_tkt') != null;
         };
-        SlashDBService.prototype.executeQuery = function (url, asArray) {
+        SlashDBService.prototype.updateRequestConfig = function (userRequestConfig) {
+            return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);
+        };
+        SlashDBService.prototype.executeQuery = function (url, userRequestConfig, asArray) {
             var _this = this;
+            if (userRequestConfig === void 0) { userRequestConfig = {}; }
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.config.endpoint + "/query" + url;
             var promise;
@@ -98,7 +102,8 @@
                 });
             }
             else {
-                promise = this.$http.get(sdbUrl, this.config.httpRequestConfig)
+                var requestConfig = this.updateRequestConfig(userRequestConfig);
+                promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
                     data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
                     if (_this.config.cacheData) {
@@ -109,8 +114,9 @@
             }
             return promise;
         };
-        SlashDBService.prototype.get = function (url, asArray) {
+        SlashDBService.prototype.get = function (url, userRequestConfig, asArray) {
             var _this = this;
+            if (userRequestConfig === void 0) { userRequestConfig = {}; }
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.getUrl(url);
             var promise;
@@ -122,7 +128,8 @@
                 });
             }
             else {
-                promise = this.$http.get(sdbUrl, this.config.httpRequestConfig)
+                var requestConfig = this.updateRequestConfig(userRequestConfig);
+                promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
                     if (Array.isArray(response.data)) {
                         data = asArray ? response.data : response.data[0];
@@ -138,9 +145,17 @@
             }
             return promise;
         };
-        SlashDBService.prototype.post = function (url, data) {
+        SlashDBService.prototype.post = function (url, data, userRequestConfig) {
+            if (userRequestConfig === void 0) { userRequestConfig = {}; }
             var sdbUrl = this.getUrl(url);
-            return this.$http.post(sdbUrl, data, this.config.httpRequestConfig);
+            var requestConfig = this.updateRequestConfig(userRequestConfig);
+            return this.$http.post(sdbUrl, data, requestConfig);
+        };
+        SlashDBService.prototype.put = function (url, data, userRequestConfig) {
+            if (userRequestConfig === void 0) { userRequestConfig = {}; }
+            var sdbUrl = this.getUrl(url);
+            var requestConfig = this.updateRequestConfig(userRequestConfig);
+            return this.$http.put(sdbUrl, data, requestConfig);
         };
         SlashDBService.$inject = ['$http', '$q', '$cookies', '$rootScope'];
         return SlashDBService;
