@@ -42,7 +42,7 @@
 
         config: ISlashDBConfig;
         settings: ISlashDBSettings;
-        storage: Storage | ISlashDBStorage
+        storage: Storage | ISlashDBStorage;
 
         static $inject = ['$http', '$q', '$cookies', '$rootScope'];
         constructor($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService, config: ISlashDBConfig) {
@@ -123,7 +123,7 @@
                 .then((response): ISlashDBSettings => {
                     angular.extend(this.settings, response.data);
                     this.notifySettingsChange();
-                    return this.settings
+                    return this.settings;
                 })
         }
 
@@ -163,7 +163,7 @@
 
         executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
             // execute SQL Pass-thru query
-            let sdbUrl = `${this.config.endpoint}/query${url}`
+            let sdbUrl = `${this.config.endpoint}/query${url}`;
             let promise: angular.IPromise<any> | angular.IHttpPromise<any>;
             let data: any;
 
