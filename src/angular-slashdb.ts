@@ -5,8 +5,8 @@
      * Interface representing the shape of a SlashDB config object.
      */
     interface ISlashDBConfig {
-        endpoint: string,
-        cacheData: boolean,
+        endpoint: string;
+        cacheData: boolean;
         httpRequestConfig: angular.IRequestShortcutConfig
     }
 
@@ -23,8 +23,8 @@
      * Interface representing the shape of a SlashDB dummy sessionStorage object.
      */
     interface ISlashDBStorage {
-        data: {},
-        getItem(key: string): any,
+        data: {};
+        getItem(key: string): any;
         setItem(key: string, value: any): void
     }
 
