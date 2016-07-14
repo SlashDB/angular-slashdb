@@ -15,7 +15,7 @@
      * Interface representing the shape of a SlashDB settings object.
      */
     interface ISlashDBSettings {
-        user: string
+        user: string;
     }
 
 
