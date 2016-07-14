@@ -7,7 +7,7 @@
     interface ISlashDBConfig {
         endpoint: string;
         cacheData: boolean;
-        httpRequestConfig: angular.IRequestShortcutConfig
+        httpRequestConfig: angular.IRequestShortcutConfig;
     }
 
 
@@ -25,7 +25,7 @@
     interface ISlashDBStorage {
         data: {};
         getItem(key: string): any;
-        setItem(key: string, value: any): void
+        setItem(key: string, value: any): void;
     }
 
     // Angular Event type alias - for ease of use.
