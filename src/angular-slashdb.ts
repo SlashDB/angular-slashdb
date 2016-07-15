@@ -222,6 +222,13 @@
             });
         }
 
+        uploadLicense(licFile: File) {
+            let fd = new FormData()
+            let userRequestConfig = {transformRequest: angular.identity, headers: {'Content-Type': undefined}}
+            fd.append('license', licFile)            
+            return this.post('/license', fd, userRequestConfig)
+        }
+
         loadModel(dbName: string) {
             // connects a given database on the backend
             return this.get(`/load-model/${dbName}.json`);

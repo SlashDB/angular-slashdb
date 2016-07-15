@@ -82,6 +82,12 @@
                 _this.getSettings();
             });
         };
+        SlashDBService.prototype.uploadLicense = function (licFile) {
+            var fd = new FormData();
+            var userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined } };
+            fd.append('license', licFile);
+            return this.post('/license', fd, userRequestConfig);
+        };
         SlashDBService.prototype.loadModel = function (dbName) {
             return this.get("/load-model/" + dbName + ".json");
         };
