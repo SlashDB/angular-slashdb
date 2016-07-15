@@ -82,6 +82,7 @@
         [key: string]: any;
     }
 
+
     /**
      * Interface representing the shape of a SlashDB QueryDef object.
      */
@@ -96,7 +97,20 @@
         'sqlstr': string;
         'executable': boolean;
         'columns': string;
+        [key: string]: any;
     }
+
+
+    /**
+     * Interface representing the shape of a SlashDB SQL Pass-thru Query object.
+     */
+    interface ISlashDBQuery {
+        'desc': string;
+        'parameters': string[];
+        'database': string;
+        [key: string]: any;
+    }
+
 
     // Angular Event type alias - for ease of use.
     type AngularEventHandler = (event: angular.IAngularEvent, ...args: any[]) => any;
@@ -115,6 +129,7 @@
         dbDefs: { [dbName: string]: ISlashDBDef };
         userDefs: { [userName: string]: ISlashDBUserDef };
         queryDefs: { [queryName: string]: ISlashDBQueryDef };
+        passThruQueries: { [passThruQueryName: string]: ISlashDBQuery };
         storage: Storage | ISlashDBStorage;
 
         static $inject = ['$http', '$q', '$cookies', '$rootScope'];
@@ -232,12 +247,12 @@
             return this.get(`/unload-model/${dbName}.json`);
         }
 
-        getDBDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getDBDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definitions for all databases
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.dbDefs != null) {
+            if (this.config.cacheData && !force && this.dbDefs != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.dbDefs };
                     resolve(response);
@@ -252,12 +267,12 @@
             return promise;
         }
 
-        getDBDef(dbName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getDBDef(dbName: string, force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definition for a given database
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.dbDefs != null && this.dbDefs[dbName] != null) {
+            if (this.config.cacheData && !force && this.dbDefs != null && this.dbDefs[dbName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.dbDefs[dbName] };
                     resolve(response);
@@ -286,12 +301,12 @@
             return this.delete(sdbUrl, data);
         }
 
-        getUserDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getUserDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definitions for all users
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.userDefs != null) {
+            if (this.config.cacheData && !force && this.userDefs != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.userDefs };
                     resolve(response);
@@ -306,12 +321,12 @@
             return promise;
         }
 
-        getUserDef(userName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getUserDef(userName: string, force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definition for a given user
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.userDefs != null && this.userDefs[userName] != null) {
+            if (this.config.cacheData && !force && this.userDefs != null && this.userDefs[userName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.userDefs[userName] };
                     resolve(response);
@@ -340,12 +355,12 @@
             return this.delete(sdbUrl, data);
         }
 
-        getQueryDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getQueryDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definitions for all queries
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.queryDefs != null) {
+            if (this.config.cacheData && !force && this.queryDefs != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.queryDefs };
                     resolve(response);
@@ -360,12 +375,12 @@
             return promise;
         }
 
-        getQueryDef(queryName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        getQueryDef(queryName: string, force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // perform a request for definition for a given query
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && this.queryDefs != null && this.queryDefs[queryName] != null) {
+            if (this.config.cacheData && !force && this.queryDefs != null && this.queryDefs[queryName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.queryDefs[queryName] };
                     resolve(response);
@@ -403,6 +418,26 @@
             // this method allows the user to ad-hoc update request attributes i.e. headers, query params etc.
             // for more see https://code.angularjs.org/1.5.7/docs/api/ng/service/$http#usage
             return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);
+        }
+
+        getQueries(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
+            // perform a request for a list available SQL Pass-thru queries
+            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
+            let response: any;
+
+            if (this.config.cacheData && !force && this.passThruQueries != null) {
+                promise = this.$q((resolve, reject): void => {
+                    response = { data: this.passThruQueries };
+                    resolve(response);
+                })
+            } else {
+                promise = this.get('/query.json').then(
+                    function (response) {
+                        this.passThruQueries = response.data;
+                        return response;
+                    });
+            }
+            return promise;
         }
 
         executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
