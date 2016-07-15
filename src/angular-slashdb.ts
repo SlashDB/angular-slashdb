@@ -28,76 +28,6 @@
         setItem(key: string, value: any): void;
     }
 
-
-    /**
-     * Interface representing the shape of a SlashDB DBUserCredentials object.
-     */
-    interface ISlashDBUserCredentials {
-        dbuser: string;
-        dbpass: string;
-        [key: string]: string;
-    }
-
-
-    /**
-     * Interface representing the shape of a SlashDB DBDef object.
-     */
-    interface ISlashDBDef {
-        'db_encoding': string;
-        'owners': string[];
-        'execute': string[];
-        'creator': string;
-        'read': string[];
-        'db_type': string;
-        'autoload': boolean;
-        'write': string[];
-        'connect_status': string;
-        'connection': string;
-        'foreign_keys': {};
-        'sysuser': ISlashDBUserCredentials;
-        'db_schema': any;
-        'offline': boolean;
-        'alternate_key': {};
-        'excluded_columns': {};
-        'desc': String;
-        [key: string]: any;
-    }
-
-
-    /**
-     * Interface representing the shape of a SlashDB UserDef object.
-     */
-    interface ISlashDBUserDef {
-        'userdef': string[],
-        'api_key': string,
-        'name': string,
-        'creator': string,
-        'edit': string[];
-        'dbdef': string[];
-        'querydef': string[];
-        'databases': { [key: string]: ISlashDBUserCredentials };
-        'password': string;
-        'email': string;
-        'view': string;
-        [key: string]: any;
-    }
-
-    /**
-     * Interface representing the shape of a SlashDB QueryDef object.
-     */
-    interface ISlashDBQueryDef {
-        'owners': string[];
-        'viewable': boolean;
-        'creator': string;
-        'read': string[];
-        'database': string;
-        'execute': string[];
-        'write': string[];
-        'sqlstr': string;
-        'executable': boolean;
-        'columns': string;
-    }
-
     // Angular Event type alias - for ease of use.
     type AngularEventHandler = (event: angular.IAngularEvent, ...args: any[]) => any;
 
@@ -112,9 +42,6 @@
 
         config: ISlashDBConfig;
         settings: ISlashDBSettings;
-        dbDefs: { [dbName: string]: ISlashDBDef };
-        userDefs: { [userName: string]: ISlashDBUserDef };
-        queryDefs: { [queryName: string]: ISlashDBQueryDef };
         storage: Storage | ISlashDBStorage;
 
         static $inject = ['$http', '$q', '$cookies', '$rootScope'];
@@ -126,9 +53,6 @@
 
             this.config = config;
             this.settings = { user: '' };
-            this.dbDefs = null;
-            this.userDefs = null;
-            this.queryDefs = null;
 
             // if authenticated, then init this.settings
             if (this.isAuthenticated() && this.settings.user == '') {
@@ -156,43 +80,43 @@
             return `${this.config.endpoint}${url}`;
         }
 
-        private subscribe(scope: angular.IScope, eventName: string, callback: AngularEventHandler): void {
+        private subscribe(scope: angular.IScope, eventName: string, callback: AngularEventHandler) {
             // a helper factory method
             let handler = this.$rootScope.$on(eventName, callback);
             scope.$on('$destroy', handler as AngularEventHandler);
         }
 
-        subscribeLogin(scope: angular.IScope, callback: AngularEventHandler): void {
+        subscribeLogin(scope: angular.IScope, callback: AngularEventHandler) {
             // subscribe to a login envent
             this.subscribe(scope, 'slashdb-service-login-event', callback);
         }
 
-        notifyLogin() {
+        notifyLogin(): angular.IAngularEvent {
             // emmit a login event
             return this.$rootScope.$emit('slashdb-service-login-event');
         }
 
-        subscribeLogout(scope: angular.IScope, callback: AngularEventHandler): void {
+        subscribeLogout(scope: angular.IScope, callback: AngularEventHandler) {
             // subscribe to a logout envent
             this.subscribe(scope, 'slashdb-service-logout-event', callback);
         }
 
-        notifyLogout() {
+        notifyLogout(): angular.IAngularEvent {
             // emmit a logout event
             return this.$rootScope.$emit('slashdb-service-logout-event');
         }
 
-        subscribeSettingsChange(scope: angular.IScope, callback: AngularEventHandler): void {
+        subscribeSettingsChange(scope: angular.IScope, callback: AngularEventHandler) {
             // subscribe to a settings change envent
             this.subscribe(scope, 'slashdb-service-settings-update-event', callback);
         }
 
-        notifySettingsChange() {
+        notifySettingsChange(): angular.IAngularEvent {
             // emmit a settings change envent
             return this.$rootScope.$emit('slashdb-service-settings-update-event');
         }
 
-        getSettings() {
+        getSettings(): angular.IPromise<any> {
             // fetch settings object from slashDB instance
             return this.get('/settings.json').then((response): {} => {
                 angular.extend(this.settings, response.data);
@@ -201,7 +125,7 @@
             });
         }
 
-        login(user: string, password: string) {
+        login(user: string, password: string): angular.IPromise<any> {
             // perform a login request
             let data: {} = { login: user, password: password };
             return this.post('/login', data).then((response): {} => {
@@ -212,7 +136,7 @@
             });
         }
 
-        logout() {
+        logout(): angular.IPromise<any> {
             // perform a logout request
             let requetUrl: string = this.getUrl('/logout');
             return this.get('/logout').finally((): void => {
@@ -220,178 +144,6 @@
                 this.notifyLogout();
                 this.getSettings();
             });
-        }
-
-        loadModel(dbName: string) {
-            // connects a given database on the backend
-            return this.get(`/load-model/${dbName}.json`);
-        }
-
-        unloadModel(dbName: string) {
-            // disconnects a given database on the backend
-            return this.get(`/unload-model/${dbName}.json`);
-        }
-
-        getDBDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definitions for all databases
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.dbDefs != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.dbDefs };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get('/dbdef.json').then(
-                    function (response) {
-                        this.dbDefs = response.data;
-                        return response;
-                    });
-            }
-            return promise;
-        }
-
-        getDBDef(dbName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definition for a given database
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.dbDefs != null && this.dbDefs[dbName] != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.dbDefs[dbName] };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get(`/dbdef/${dbName}.json`);
-            }
-            return promise;
-        }
-
-        createDBDef(dbName: string, data: ISlashDBDef) {
-            // create a new database definition
-            let sdbUrl: string = `/dbdef/${dbName}.json`;
-            return this.post(sdbUrl, data);
-        }
-
-        updateDBDef(dbName: string, data: ISlashDBDef) {
-            // update a database definition
-            let sdbUrl: string = `/dbdef/${dbName}.json`;
-            return this.put(sdbUrl, data);
-        }
-
-        deleteDBDef(dbName: string, data: ISlashDBDef) {
-            // delete a database definition
-            let sdbUrl: string = `/dbdef/${dbName}.json`;
-            return this.delete(sdbUrl, data);
-        }
-
-        getUserDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definitions for all users
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.userDefs != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.userDefs };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get('/userdef.json').then(
-                    function (response) {
-                        this.userDefs = response.data;
-                        return response;
-                    });
-            }
-            return promise;
-        }
-
-        getUserDef(userName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definition for a given user
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.userDefs != null && this.userDefs[userName] != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.userDefs[userName] };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get(`/userdef/${userName}.json`);
-            }
-            return promise;
-        }
-
-        createUserDef(userName: string, data: ISlashDBUserDef) {
-            // create a new user definition
-            let sdbUrl: string = `/userdef/${userName}.json`;
-            return this.post(sdbUrl, data);
-        }
-
-        updateUserDef(userName: string, data: ISlashDBUserDef) {
-            // update a user definition
-            let sdbUrl: string = `/userdef/${userName}.json`;
-            return this.put(sdbUrl, data);
-        }
-
-        deleteUserDef(userName: string, data: ISlashDBUserDef) {
-            // delete a user definition
-            let sdbUrl: string = `/userdef/${userName}.json`;
-            return this.delete(sdbUrl, data);
-        }
-
-        getQueryDefs(): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definitions for all queries
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.queryDefs != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.queryDefs };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get('/querydef.json').then(
-                    function (response) {
-                        this.queryDefs = response.data;
-                        return response;
-                    });
-            }
-            return promise;
-        }
-
-        getQueryDef(queryName: string): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // perform a request for definition for a given query
-            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let response: any;
-
-            if (this.config.cacheData && this.queryDefs != null && this.queryDefs[queryName] != null) {
-                promise = this.$q((resolve, reject): void => {
-                    response = { data: this.queryDefs[queryName] };
-                    resolve(response);
-                })
-            } else {
-                promise = this.get(`/querydef/${queryName}.json`);
-            }
-            return promise;
-        }
-
-        createQueryDef(queryName: string, data: ISlashDBUserDef) {
-            // create a new query definition
-            let sdbUrl: string = `/querydef/${queryName}.json`;
-            return this.post(sdbUrl, data);
-        }
-
-        updateQueryDef(queryName: string, data: ISlashDBUserDef) {
-            // update a query definition
-            let sdbUrl: string = `/querydef/${queryName}.json`;
-            return this.put(sdbUrl, data);
-        }
-
-        deleteQueryDef(queryName: string, data: ISlashDBUserDef) {
-            // delete a query definition
-            let sdbUrl: string = `/querydef/${queryName}.json`;
-            return this.delete(sdbUrl, data);
         }
 
         isAuthenticated(): boolean {
@@ -467,25 +219,18 @@
             return promise;
         }
 
-        post(url: string, data: any, userRequestConfig: {} = {}) {
+        post(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<{}> {
             // sends new data to all your favorite resources
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.post(sdbUrl, data, requestConfig);
         }
 
-        put(url: string, data: any, userRequestConfig: {} = {}) {
+        put(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<{}> {
             // sends update data to all your favorite resources
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.put(sdbUrl, data, requestConfig);
-        }
-
-        delete(url: string, userRequestConfig: {} = {}) {
-            // sends delete request to all your favorite resources
-            let sdbUrl: string = this.getUrl(url);
-            let requestConfig = this.updateRequestConfig(userRequestConfig);
-            return this.$http.delete(sdbUrl, requestConfig);
         }
     }
 
@@ -507,22 +252,22 @@
             };
         }
 
-        setEndpoint(endpoint: string): void {
+        setEndpoint(endpoint: string) {
             // sets default endpoint
             this.config.endpoint = endpoint;
         }
 
-        setCacheData(cacheData: boolean): void {
+        setCacheData(cacheData: boolean) {
             // sets cacheData boolean flag
             this.config.cacheData = cacheData;
         }
 
-        setHeaders(headers: angular.IHttpRequestConfigHeaders): void {
+        setHeaders(headers: angular.IHttpRequestConfigHeaders) {
             // sets default headers of your choice
             this.config.httpRequestConfig.headers = headers;
         }
 
-        setParams(params: {}): void {
+        setParams(params: {}) {
             // sets default request params of your choice
             this.config.httpRequestConfig.params = params;
         }

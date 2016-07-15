@@ -8,9 +8,6 @@
             this.$rootScope = $rootScope;
             this.config = config;
             this.settings = { user: '' };
-            this.dbDefs = null;
-            this.userDefs = null;
-            this.queryDefs = null;
             if (this.isAuthenticated() && this.settings.user == '') {
                 this.getSettings();
             }
@@ -81,147 +78,6 @@
                 _this.notifyLogout();
                 _this.getSettings();
             });
-        };
-        SlashDBService.prototype.loadModel = function (dbName) {
-            return this.get("/load-model/" + dbName + ".json");
-        };
-        SlashDBService.prototype.unloadModel = function (dbName) {
-            return this.get("/unload-model/" + dbName + ".json");
-        };
-        SlashDBService.prototype.getDBDefs = function () {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.dbDefs != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.dbDefs };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get('/dbdef.json').then(function (response) {
-                    this.dbDefs = response.data;
-                    return response;
-                });
-            }
-            return promise;
-        };
-        SlashDBService.prototype.getDBDef = function (dbName) {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.dbDefs != null && this.dbDefs[dbName] != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.dbDefs[dbName] };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get("/dbdef/" + dbName + ".json");
-            }
-            return promise;
-        };
-        SlashDBService.prototype.createDBDef = function (dbName, data) {
-            var sdbUrl = "/dbdef/" + dbName + ".json";
-            return this.post(sdbUrl, data);
-        };
-        SlashDBService.prototype.updateDBDef = function (dbName, data) {
-            var sdbUrl = "/dbdef/" + dbName + ".json";
-            return this.put(sdbUrl, data);
-        };
-        SlashDBService.prototype.deleteDBDef = function (dbName, data) {
-            var sdbUrl = "/dbdef/" + dbName + ".json";
-            return this.delete(sdbUrl, data);
-        };
-        SlashDBService.prototype.getUserDefs = function () {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.userDefs != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.userDefs };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get('/userdef.json').then(function (response) {
-                    this.userDefs = response.data;
-                    return response;
-                });
-            }
-            return promise;
-        };
-        SlashDBService.prototype.getUserDef = function (userName) {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.userDefs != null && this.userDefs[userName] != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.userDefs[userName] };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get("/userdef/" + userName + ".json");
-            }
-            return promise;
-        };
-        SlashDBService.prototype.createUserDef = function (userName, data) {
-            var sdbUrl = "/userdef/" + userName + ".json";
-            return this.post(sdbUrl, data);
-        };
-        SlashDBService.prototype.updateUserDef = function (userName, data) {
-            var sdbUrl = "/userdef/" + userName + ".json";
-            return this.put(sdbUrl, data);
-        };
-        SlashDBService.prototype.deleteUserDef = function (userName, data) {
-            var sdbUrl = "/userdef/" + userName + ".json";
-            return this.delete(sdbUrl, data);
-        };
-        SlashDBService.prototype.getQueryDefs = function () {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.queryDefs != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.queryDefs };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get('/querydef.json').then(function (response) {
-                    this.queryDefs = response.data;
-                    return response;
-                });
-            }
-            return promise;
-        };
-        SlashDBService.prototype.getQueryDef = function (queryName) {
-            var _this = this;
-            var promise;
-            var response;
-            if (this.config.cacheData && this.queryDefs != null && this.queryDefs[queryName] != null) {
-                promise = this.$q(function (resolve, reject) {
-                    response = { data: _this.queryDefs[queryName] };
-                    resolve(response);
-                });
-            }
-            else {
-                promise = this.get("/querydef/" + queryName + ".json");
-            }
-            return promise;
-        };
-        SlashDBService.prototype.createQueryDef = function (queryName, data) {
-            var sdbUrl = "/querydef/" + queryName + ".json";
-            return this.post(sdbUrl, data);
-        };
-        SlashDBService.prototype.updateQueryDef = function (queryName, data) {
-            var sdbUrl = "/querydef/" + queryName + ".json";
-            return this.put(sdbUrl, data);
-        };
-        SlashDBService.prototype.deleteQueryDef = function (queryName, data) {
-            var sdbUrl = "/querydef/" + queryName + ".json";
-            return this.delete(sdbUrl, data);
         };
         SlashDBService.prototype.isAuthenticated = function () {
             return this.$cookies.get('auth_tkt') != null;
@@ -299,12 +155,6 @@
             var sdbUrl = this.getUrl(url);
             var requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.put(sdbUrl, data, requestConfig);
-        };
-        SlashDBService.prototype.delete = function (url, userRequestConfig) {
-            if (userRequestConfig === void 0) { userRequestConfig = {}; }
-            var sdbUrl = this.getUrl(url);
-            var requestConfig = this.updateRequestConfig(userRequestConfig);
-            return this.$http.delete(sdbUrl, requestConfig);
         };
         SlashDBService.$inject = ['$http', '$q', '$cookies', '$rootScope'];
         return SlashDBService;
