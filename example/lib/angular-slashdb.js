@@ -54,32 +54,29 @@
         };
         SlashDBService.prototype.getSettings = function () {
             var _this = this;
-            var requetUrl = this.getUrl('/settings.json');
-            return this.$http.get(requetUrl)
-                .then(function (response) {
+            return this.get('/settings.json').then(function (response) {
                 angular.extend(_this.settings, response.data);
                 _this.notifySettingsChange();
-                return _this.settings;
+                return response;
             });
         };
         SlashDBService.prototype.login = function (user, password) {
             var _this = this;
-            var requetUrl = this.getUrl('/login');
-            return this.$http.post(requetUrl, { login: user, password: password })
-                .then(function (response) {
+            var data = { login: user, password: password };
+            return this.post('/login', data).then(function (response) {
                 _this.$cookies.put('auth_tkt_user', user);
                 _this.notifyLogin();
-                return _this.getSettings();
+                _this.getSettings();
+                return response;
             });
         };
         SlashDBService.prototype.logout = function () {
             var _this = this;
             var requetUrl = this.getUrl('/logout');
-            return this.$http.get(requetUrl)
-                .finally(function () {
+            return this.get('/logout').finally(function () {
                 _this.$cookies.remove('auth_tkt');
                 _this.notifyLogout();
-                return _this.getSettings();
+                _this.getSettings();
             });
         };
         SlashDBService.prototype.isAuthenticated = function () {
@@ -94,11 +91,11 @@
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.config.endpoint + "/query" + url;
             var promise;
-            var data;
+            var data, response;
             if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q(function (resolve, reject) {
-                    data = JSON.parse(_this.storage.getItem(sdbUrl));
-                    resolve(data);
+                    response = JSON.parse(_this.storage.getItem(sdbUrl));
+                    resolve(response);
                 });
             }
             else {
@@ -106,11 +103,12 @@
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
                     data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
+                    response.data = data;
                     if (_this.config.cacheData) {
-                        _this.storage.setItem(sdbUrl, JSON.stringify(data));
+                        _this.storage.setItem(sdbUrl, JSON.stringify(response));
                     }
-                    return data;
-                }, function (response) { return _this.$q.reject(response.data); });
+                    return response;
+                });
             }
             return promise;
         };
@@ -120,11 +118,11 @@
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.getUrl(url);
             var promise;
-            var data;
+            var data, response;
             if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q(function (resolve, reject) {
-                    data = JSON.parse(_this.storage.getItem(sdbUrl));
-                    resolve(data);
+                    response = JSON.parse(_this.storage.getItem(sdbUrl));
+                    resolve(response);
                 });
             }
             else {
@@ -137,11 +135,12 @@
                     else {
                         data = asArray ? [response.data] : response.data;
                     }
+                    response.data = data;
                     if (_this.config.cacheData) {
-                        _this.storage.setItem(sdbUrl, JSON.stringify(data));
+                        _this.storage.setItem(sdbUrl, JSON.stringify(response));
                     }
-                    return data;
-                }, function (response) { return _this.$q.reject(response.data); });
+                    return response;
+                });
             }
             return promise;
         };

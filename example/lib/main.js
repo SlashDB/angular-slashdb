@@ -80,11 +80,11 @@
                 getData: function (config) {
                     var setData = function () {
                         // through config.requestConfig the developer can set additional, ad-hoc, request attributes
-                        slashDB.get(config.url, config.requestConfig).then(function (data) {
+                        slashDB.get(config.url, config.requestConfig).then(function (response) {
                             service.clearData();
-                            [].push.apply(service.data, data);
+                            [].push.apply(service.data, response.data);
                         });
-                    }
+                    };
 
                     // wait for login event, then set the data
                     slashDB.subscribeLogin(config.scope, function () {

@@ -118,36 +118,32 @@
 
         getSettings(): angular.IPromise<any> {
             // fetch settings object from slashDB instance
-            let requetUrl: string = this.getUrl('/settings.json');
-            return this.$http.get(requetUrl)
-                .then((response): ISlashDBSettings => {
-                    angular.extend(this.settings, response.data);
-                    this.notifySettingsChange();
-                    return this.settings;
-                })
+            return this.get('/settings.json').then((response): {} => {
+                angular.extend(this.settings, response.data);
+                this.notifySettingsChange();
+                return response;
+            });
         }
 
         login(user: string, password: string): angular.IPromise<any> {
             // perform a login request
-            let requetUrl: string = this.getUrl('/login');
-
-            return this.$http.post(requetUrl, { login: user, password: password })
-                .then((response): angular.IPromise<any> => {
-                    this.$cookies.put('auth_tkt_user', user);
-                    this.notifyLogin();
-                    return this.getSettings();
-                });
+            let data: {} = { login: user, password: password };
+            return this.post('/login', data).then((response): {} => {
+                this.$cookies.put('auth_tkt_user', user);
+                this.notifyLogin();
+                this.getSettings();
+                return response;
+            });
         }
 
         logout(): angular.IPromise<any> {
             // perform a logout request
             let requetUrl: string = this.getUrl('/logout');
-            return this.$http.get(requetUrl)
-                .finally((): angular.IPromise<any> => {
-                    this.$cookies.remove('auth_tkt');
-                    this.notifyLogout();
-                    return this.getSettings();
-                });
+            return this.get('/logout').finally((): void => {
+                this.$cookies.remove('auth_tkt');
+                this.notifyLogout();
+                this.getSettings();
+            });
         }
 
         isAuthenticated(): boolean {
@@ -161,78 +157,76 @@
             return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);
         }
 
-        executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
+        executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // execute SQL Pass-thru query
             let sdbUrl = `${this.config.endpoint}/query${url}`;
-            let promise: angular.IPromise<any> | angular.IHttpPromise<any>;
-            let data: any;
+            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
+            let data, response: any;
 
             if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q((resolve, reject): void => {
-                    data = JSON.parse(this.storage.getItem(sdbUrl));
-                    resolve(data);
+                    response = JSON.parse(this.storage.getItem(sdbUrl));
+                    resolve(response);
                 })
             } else {
                 let requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
-                    .then(
-                    (response): {} => {
+                    .then((response): {} => {
                         data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
+                        response.data = data;
 
                         if (this.config.cacheData) {
-                            this.storage.setItem(sdbUrl, JSON.stringify(data));
+                            this.storage.setItem(sdbUrl, JSON.stringify(response));
                         }
 
-                        return data;
-                    },
-                    (response): {} => this.$q.reject(response.data));
+                        return response;
+                    });
             }
             return promise
         }
 
-        get(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<any> {
+        get(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // gets all your favorite resources
             let sdbUrl = this.getUrl(url);
-            let promise: angular.IPromise<any> | angular.IHttpPromise<any>;
-            let data: any;
+            let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
+            let data, response: any;
 
             if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q((resolve, reject): void => {
-                    data = JSON.parse(this.storage.getItem(sdbUrl));
-                    resolve(data);
+                    response = JSON.parse(this.storage.getItem(sdbUrl));
+                    resolve(response);
                 })
             } else {
                 // If 'asArray' set true this will always return data as an Array. Otherwise it will pick the first element of a given Array.
                 let requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
-                    .then(
-                    (response): {} => {
+                    .then((response): {} => {
                         if (Array.isArray(response.data)) {
                             data = asArray ? response.data : response.data[0];
                         } else {
                             data = asArray ? [response.data] : response.data;
                         }
+                        response.data = data;
 
                         if (this.config.cacheData) {
-                            this.storage.setItem(sdbUrl, JSON.stringify(data));
+                            this.storage.setItem(sdbUrl, JSON.stringify(response));
                         }
 
-                        return data;
-                    },
-                    (response): {} => this.$q.reject(response.data));
+                        return response;
+                    });
             }
 
             return promise;
         }
 
-        post(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<any> {
+        post(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<{}> {
             // sends new data to all your favorite resources
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.post(sdbUrl, data, requestConfig);
         }
 
-        put(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<any> {
+        put(url: string, data: any, userRequestConfig: {} = {}): angular.IHttpPromise<{}> {
             // sends update data to all your favorite resources
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
