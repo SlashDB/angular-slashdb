@@ -254,14 +254,15 @@
             }
             return promise;
         };
-        SlashDBService.prototype.executeQuery = function (url, userRequestConfig, asArray) {
+        SlashDBService.prototype.executeQuery = function (url, userRequestConfig, force, asArray) {
             var _this = this;
             if (userRequestConfig === void 0) { userRequestConfig = {}; }
+            if (force === void 0) { force = false; }
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.config.endpoint + "/query" + url;
             var promise;
             var data, response;
-            if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
+            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q(function (resolve, reject) {
                     response = JSON.parse(_this.storage.getItem(sdbUrl));
                     resolve(response);
@@ -281,14 +282,15 @@
             }
             return promise;
         };
-        SlashDBService.prototype.get = function (url, userRequestConfig, asArray) {
+        SlashDBService.prototype.get = function (url, userRequestConfig, force, asArray) {
             var _this = this;
             if (userRequestConfig === void 0) { userRequestConfig = {}; }
+            if (force === void 0) { force = false; }
             if (asArray === void 0) { asArray = true; }
             var sdbUrl = this.getUrl(url);
             var promise;
             var data, response;
-            if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
+            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q(function (resolve, reject) {
                     response = JSON.parse(_this.storage.getItem(sdbUrl));
                     resolve(response);

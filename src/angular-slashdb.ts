@@ -440,13 +440,13 @@
             return promise;
         }
 
-        executeQuery(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        executeQuery(url: string, userRequestConfig: {} = {}, force: boolean = false, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // execute SQL Pass-thru query
             let sdbUrl = `${this.config.endpoint}/query${url}`;
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let data, response: any;
 
-            if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
+            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = JSON.parse(this.storage.getItem(sdbUrl));
                     resolve(response);
@@ -468,13 +468,13 @@
             return promise
         }
 
-        get(url: string, userRequestConfig: {} = {}, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        get(url: string, userRequestConfig: {} = {}, force: boolean = false, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // gets all your favorite resources
             let sdbUrl = this.getUrl(url);
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let data, response: any;
 
-            if (this.config.cacheData && this.storage.getItem(sdbUrl) != null) {
+            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = JSON.parse(this.storage.getItem(sdbUrl));
                     resolve(response);
