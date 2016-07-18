@@ -7,7 +7,7 @@
     interface ISlashDBConfig {
         endpoint: string;
         cacheData: boolean;
-        apiKeys: {};
+        apiKeys: { [key: string]: string };
         httpRequestConfig: angular.IRequestShortcutConfig;
     }
 
@@ -584,7 +584,7 @@
             this.config.httpRequestConfig = newValue;
         }
 
-        setAPIKey(apiKeysObj: {}): void {
+        setAPIKey(apiKeysObj: { [key: string]: string }): void {
             // sets API authentication request prameters
             this.config.apiKeys = apiKeysObj;
             angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
