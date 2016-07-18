@@ -1,7 +1,7 @@
 angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 =========
 
-Angular-shlashdb is a small plugg-in, allowing you to user [SlashDB](http://www.slashdb.com/) features more easily in your AngulaJS app.
+Angular-shlashdb is a small plug-in, allowing you to user [SlashDB](http://www.slashdb.com/) features more easily in your AngularJS app.
 This plug-in depends on:
 * SlashDB >= 0.9.7
 * AngularJS >= 1.5.7 and < 2.0
@@ -72,7 +72,7 @@ config = {
 }
 ```
 
-### You can set its values by hand or use some of the convinience methods we provide with _slashDBProvider_ i.e.
+### You can set its values by hand or use some of the convenience methods we provide with _slashDBProvider_ i.e.
 
 ## setEndpoint
 ```javascript
