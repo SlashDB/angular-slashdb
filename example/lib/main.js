@@ -4,10 +4,9 @@
 
         // configure slashDB using the slashDBProvider
         .config(['$httpProvider', 'slashDBProvider', function ($httpProvider, slashDBProvider) {
-            $httpProvider.defaults.withCredentials = true;
-
+            // set endpoint to your slashDB instance or leve it pointing to the demo
             slashDBProvider.setEndpoint('http://localhost:6543');
-            // cacheing is ON by default, in this example we'll turn it OFF
+            // caching is ON by default, in this example we'll turn it OFF
             slashDBProvider.setCacheData(false);
         }])
 
