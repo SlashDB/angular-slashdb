@@ -146,10 +146,8 @@
             this.userDefs = null;          // local cache for slashDB user definitions
             this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
 
-            // if authenticated, then init this.settings
-            if (this.isAuthenticated() && this.settings.user == '') {
-                this.getSettings();
-            }
+            // init this.settings
+            this.getSettings();
 
             // use window.sessionStorage if available else use a simple dummy sessionStorage object
             if (window.sessionStorage != null) {

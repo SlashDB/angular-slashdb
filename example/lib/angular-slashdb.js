@@ -11,9 +11,7 @@
             this.dbDefs = null;
             this.userDefs = null;
             this.queryDefs = null;
-            if (this.isAuthenticated() && this.settings.user == '') {
-                this.getSettings();
-            }
+            this.getSettings();
             if (window.sessionStorage != null) {
                 this.storage = window.sessionStorage;
             }
