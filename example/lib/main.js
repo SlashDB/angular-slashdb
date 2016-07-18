@@ -4,7 +4,7 @@
 
         // configure slashDB using the slashDBProvider
         .config(['$httpProvider', 'slashDBProvider', function ($httpProvider, slashDBProvider) {
-            // set endpoint to your slashDB instance or leve it pointing to the demo
+            // set endpoint to your slashDB instance or leave it pointing to the demo site
             slashDBProvider.setEndpoint('http://localhost:6543');
             // caching is ON by default, in this example we'll turn it OFF
             slashDBProvider.setCacheData(false);
@@ -65,7 +65,7 @@
                 slashDB.subscribeLogout($scope, function () {
                     credentials.user = credentials.passwd = '';
                 });
-            },
+            }
         })
 
         .service('tableData', ['slashDB', function (slashDB) {

@@ -62,12 +62,12 @@ exampleApp.config(['$httpProvider', 'slashDBProvider', function ($httpProvider, 
 ```javascript
 config = {
     endpoint: '',              // default shashDB endpoint
-    cacheData: false,          // determins if cached data should be used
+    cacheData: false,          // determines if cached data should be used
     apiKeys: {},               // hold optional API keys
     httpRequestConfig: {       // user provided request config
         headers: {},           // holds user provided request headers
         params: {},            // holds user provided request params i.e. {depth: 1, sort: LastName}
-        withCredentials: true  // determins if cookie based authentication should be used
+        withCredentials: true  // determines if cookie based authentication should be used
     }
 }
 ```
@@ -130,6 +130,71 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 
 ### We also provide an injectable _slashDB_ service
 
+
+## get
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // by passing an request config object, it's possible to control request in a fine grained manner
+    // passing true as the 3rd param, will omit using cache and re-download data
+    // passing false as the 4th function param, it's possible to treat returned data as a single value, rather than an array of values (the default)
+    // returns a Promise for further use
+    var myRequestCofig = {
+        headers: { 'Accpet': 'application/json' },
+        params: { count: ''}
+    };
+    slashDB.get('/myDB/myTable.json', true, myRequestCofig, false).then(function(response) {
+            console.log('data received!');
+        });
+    });
+    return {};
+}])
+```
+
+
+## post
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // by passing an request config object, it's possible to control request in a fine grained manner
+    // returns a Promise for further use
+    var myRequestCofig = {
+        headers: { 'Accpet': 'application/json' }  // the default
+    };
+    var newRecordData = { 'Name': 'Joe' };
+    slashDB.post('/myDB/myTable.json', newRecordData, myRequestCofig, false).then(function(response) {
+            console.log('new object created!');
+        });
+    });
+    return {};
+}])
+```
+
+## put
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // by passing an request config object, it's possible to control request in a fine grained manner
+    // returns a Promise for further use
+    var updateRecordData = { 'Email': 'Joe@gmail.com' };
+    slashDB.put('/myDB/myTable/1.json', updateRecordData, {}, false).then(function(response) {
+            console.log('object updated!');
+        });
+    });
+    return {};
+}])
+```
+
+## delete
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // by passing an request config object, it's possible to control request in a fine grained manner
+    // returns a Promise for further use
+    slashDB.delete('/myDB/myTable/1.json').then(function(response) {
+            console.log('object deleted!');
+        });
+    });
+    return {};
+}])
+```
+
 ## injecting into a user defined service
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
@@ -138,6 +203,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     };
 }])
 ```
+
 
 ## subscribeLogin and notifyLogin
 ```javascript
@@ -289,10 +355,10 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     var newUserDef = {
-        'userdef': ['me']',
+        'userdef': ['me'],
         'api_key': 'somekey',
         'name': 'newQueryDef',
-        'creator': 'me,
+        'creator': 'me',
         'edit': [];
         'dbdef': ['someDBDef'];
         'querydef': [];
@@ -375,70 +441,6 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         var data = response.data;                       // i.e. ['fist', second]
         slashDB.executeQuery(data[0]).then(function(response) {
             console.log('a Pass-thru query is done!');
-        });
-    });
-    return {};
-}])
-```
-
-## get
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    // by passing an request config object, it's possible to control request in a fine grained manner
-    // passing true as the 3rd param, will omit using cache and re-download data
-    // passing false as the 4th function param, it's possible to treat returned data as a single value, rather than an array of values (the default)
-    // returns a Promise for further use
-    var myRequestCofig = {
-        headers: { 'Accpet': 'application/json' },
-        params: { count: ''}
-    };
-    slashDB.get('/myDB/myTable.json', true, myRequestCofig, false).then(function(response) {
-            console.log('data received!');
-        });
-    });
-    return {};
-}])
-```
-
-
-## post
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    // by passing an request config object, it's possible to control request in a fine grained manner
-    // returns a Promise for further use
-    var myRequestCofig = {
-        headers: { 'Accpet': 'application/json' }  // the default
-    };
-    var newRecordData = { 'Name': 'Joe' };
-    slashDB.post('/myDB/myTable.json', newRecordData, myRequestCofig, false).then(function(response) {
-            console.log('new object created!');
-        });
-    });
-    return {};
-}])
-```
-
-## put
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    // by passing an request config object, it's possible to control request in a fine grained manner
-    // returns a Promise for further use
-    var updateRecordData = { 'Email': 'Joe@gmail.com' };
-    slashDB.put('/myDB/myTable/1.json', updateRecordData, {}, false).then(function(response) {
-            console.log('object updated!');
-        });
-    });
-    return {};
-}])
-```
-
-## delete
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    // by passing an request config object, it's possible to control request in a fine grained manner
-    // returns a Promise for further use
-    slashDB.delete('/myDB/myTable/1.json').then(function(response) {
-            console.log('object deleted!');
         });
     });
     return {};

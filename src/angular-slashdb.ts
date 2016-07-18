@@ -180,7 +180,7 @@
         }
 
         subscribeLogin(scope: angular.IScope, callback: AngularEventHandler): void {
-            // subscribe to a login envent
+            // subscribe to a login event
             this.subscribe(scope, 'slashdb-service-login-event', callback);
         }
 
@@ -205,7 +205,7 @@
         }
 
         notifySettingsChange() {
-            // emmit a settings change envent
+            // emmit a settings change event
             return this.$rootScope.$emit('slashdb-service-settings-update-event');
         }
 
@@ -545,12 +545,12 @@
         constructor() {
             this.config = {
                 endpoint: '',              // default shashDB endpoint
-                cacheData: false,          // determins if cached data should be used
+                cacheData: false,          // determines if cached data should be used
                 apiKeys: {},               // hold optional API keys
                 httpRequestConfig: {       // user provided request config
                     headers: {},           // holds user provided request headers
                     params: {},            // holds user provided request params i.e. {depth: 1, sort: LastName}
-                    withCredentials: true  // determins if cookie based authentication should be used
+                    withCredentials: true  // determines if cookie based authentication should be used
                 }
             };
         }
@@ -586,7 +586,7 @@
         }
 
         setAPIKey(apiKeysObj: { [key: string]: string }): void {
-            // sets API authentication request prameters
+            // sets API authentication request parameters
             if (Object.keys(apiKeysObj).length) {
                 // turn off per request withCredentials
                 this.setWithCredentials(false);
@@ -595,7 +595,7 @@
             } else {
                 // turn on per request withCredentials
                 this.setWithCredentials(true);
-                // delete all prevously set API keys form request params
+                // delete all previously set API keys form request params
                 let tmp = Object.keys(this.config.apiKeys);
                 for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
                     delete this.config.httpRequestConfig.params[i];
