@@ -77,7 +77,6 @@
         };
         SlashDBService.prototype.logout = function () {
             var _this = this;
-            var requetUrl = this.getUrl('/logout');
             return this.get('/logout').finally(function () {
                 _this.$cookies.remove('auth_tkt');
                 _this.notifyLogout();
@@ -139,9 +138,9 @@
             var sdbUrl = "/dbdef/" + dbName + ".json";
             return this.put(sdbUrl, data);
         };
-        SlashDBService.prototype.deleteDBDef = function (dbName, data) {
+        SlashDBService.prototype.deleteDBDef = function (dbName) {
             var sdbUrl = "/dbdef/" + dbName + ".json";
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         };
         SlashDBService.prototype.getUserDefs = function (force) {
             var _this = this;
@@ -186,9 +185,9 @@
             var sdbUrl = "/userdef/" + userName + ".json";
             return this.put(sdbUrl, data);
         };
-        SlashDBService.prototype.deleteUserDef = function (userName, data) {
+        SlashDBService.prototype.deleteUserDef = function (userName) {
             var sdbUrl = "/userdef/" + userName + ".json";
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         };
         SlashDBService.prototype.getQueryDefs = function (force) {
             var _this = this;
@@ -233,9 +232,9 @@
             var sdbUrl = "/querydef/" + queryName + ".json";
             return this.put(sdbUrl, data);
         };
-        SlashDBService.prototype.deleteQueryDef = function (queryName, data) {
+        SlashDBService.prototype.deleteQueryDef = function (queryName) {
             var sdbUrl = "/querydef/" + queryName + ".json";
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         };
         SlashDBService.prototype.isAuthenticated = function () {
             return this.$cookies.get('auth_tkt') != null;
@@ -280,7 +279,7 @@
                 var requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
-                    data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
+                    data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
                     response.data = data;
                     if (_this.config.cacheData) {
                         _this.storage.setItem(sdbUrl, JSON.stringify(response));

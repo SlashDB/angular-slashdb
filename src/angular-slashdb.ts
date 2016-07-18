@@ -60,7 +60,7 @@
         'offline': boolean;
         'alternate_key': {};
         'excluded_columns': {};
-        'desc': String;
+        'desc': string;
         [key: string]: any;
     }
 
@@ -141,10 +141,10 @@
             this.$rootScope = $rootScope;
 
             this.config = config;
-            this.settings = { user: '' };
-            this.dbDefs = null;
-            this.userDefs = null;
-            this.queryDefs = null;
+            this.settings = { user: '' };  // local cache for settings provided by the slashDB instance
+            this.dbDefs = null;            // local cache for slashDB database definitions
+            this.userDefs = null;          // local cache for slashDB user definitions
+            this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
 
             // if authenticated, then init this.settings
             if (this.isAuthenticated() && this.settings.user == '') {
@@ -163,12 +163,13 @@
                     getItem: (key: string): any => {
                         return storage.data[key];
                     }
-                }
+                };
                 this.storage = storage;
             }
         }
 
-        getUrl(url: string): string {
+        private getUrl(url: string): string {
+            // concatenates the base endpoint and a given path to a complete url
             return `${this.config.endpoint}${url}`;
         }
 
@@ -232,7 +233,6 @@
 
         logout() {
             // perform a logout request
-            let requetUrl: string = this.getUrl('/logout');
             return this.get('/logout').finally((): void => {
                 this.$cookies.remove('auth_tkt');
                 this.notifyLogout();
@@ -241,10 +241,11 @@
         }
 
         uploadLicense(licFile: File) {
+            // uploads licence file data to slashDB instance
             let fd = new FormData();
             let userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined } };
             fd.append('license', licFile);
-            return this.post('/license', fd, userRequestConfig)
+            return this.post('/license', fd, userRequestConfig);
         }
 
         loadModel(dbName: string) {
@@ -305,10 +306,10 @@
             return this.put(sdbUrl, data);
         }
 
-        deleteDBDef(dbName: string, data: ISlashDBDef) {
+        deleteDBDef(dbName: string) {
             // delete a database definition
             let sdbUrl: string = `/dbdef/${dbName}.json`;
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         }
 
         getUserDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
@@ -359,10 +360,10 @@
             return this.put(sdbUrl, data);
         }
 
-        deleteUserDef(userName: string, data: ISlashDBUserDef) {
+        deleteUserDef(userName: string) {
             // delete a user definition
             let sdbUrl: string = `/userdef/${userName}.json`;
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         }
 
         getQueryDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
@@ -413,10 +414,10 @@
             return this.put(sdbUrl, data);
         }
 
-        deleteQueryDef(queryName: string, data: ISlashDBUserDef) {
+        deleteQueryDef(queryName: string) {
             // delete a query definition
             let sdbUrl: string = `/querydef/${queryName}.json`;
-            return this.delete(sdbUrl, data);
+            return this.delete(sdbUrl);
         }
 
         isAuthenticated(): boolean {
@@ -465,7 +466,7 @@
                 let requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then((response): {} => {
-                        data = (!Array.isArray(response.data) && asArray) ? [response.data] : data = response.data;
+                        data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
                         response.data = data;
 
                         if (this.config.cacheData) {
