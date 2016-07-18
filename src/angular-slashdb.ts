@@ -543,13 +543,13 @@
 
         constructor() {
             this.config = {
-                endpoint: 'http://localhost',
-                cacheData: false,
-                apiKeys: {},
-                httpRequestConfig: {
-                    headers: {},
-                    params: {},
-                    withCredentials: true
+                endpoint: '',              // default shashDB endpoint
+                cacheData: false,          // determins if cached data should be used
+                apiKeys: {},               // hold optional API keys
+                httpRequestConfig: {       // user provided request config
+                    headers: {},           // holds user provided request headers
+                    params: {},            // holds user provided request params i.e. {depth: 1, sort: LastName}
+                    withCredentials: true  // determins if cookie based authentication should be used
                 }
             };
         }
@@ -578,7 +578,7 @@
         }
 
         setWithCredentials(newValue: boolean): void {
-            // sets flag determinating what method of authentications soudl be used
+            // sets flag determinating what method of authentication should be used
             // true - means that angular-shashdb will use cookie based authentication
             // false - means that the user API keys will be used
             this.config.httpRequestConfig = newValue;
@@ -586,9 +586,21 @@
 
         setAPIKey(apiKeysObj: { [key: string]: string }): void {
             // sets API authentication request prameters
+            if (Object.keys(apiKeysObj).length) {
+                // turn off per request withCredentials
+                this.setWithCredentials(false);
+                // add API keys to request params
+                angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
+            } else {
+                // turn on per request withCredentials
+                this.setWithCredentials(true);
+                // delete all prevously set API keys form request params
+                let tmp = Object.keys(this.config.apiKeys);
+                for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                    delete this.config.httpRequestConfig.params[i];
+                }
+            }
             this.config.apiKeys = apiKeysObj;
-            this.setWithCredentials(false);  // turn off per request withCredentials
-            angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         }
 
         $get($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService): SlashDBService {

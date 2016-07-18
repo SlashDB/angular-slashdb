@@ -347,7 +347,7 @@
     var SlashDBServiceProvider = (function () {
         function SlashDBServiceProvider() {
             this.config = {
-                endpoint: 'http://localhost',
+                endpoint: '',
                 cacheData: false,
                 apiKeys: {},
                 httpRequestConfig: {
@@ -376,9 +376,18 @@
             this.config.httpRequestConfig = newValue;
         };
         SlashDBServiceProvider.prototype.setAPIKey = function (apiKeysObj) {
+            if (Object.keys(apiKeysObj).length) {
+                this.setWithCredentials(false);
+                angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
+            }
+            else {
+                this.setWithCredentials(true);
+                var tmp = Object.keys(this.config.apiKeys);
+                for (var i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                    delete this.config.httpRequestConfig.params[i];
+                }
+            }
             this.config.apiKeys = apiKeysObj;
-            this.setWithCredentials(false);
-            angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         };
         SlashDBServiceProvider.prototype.$get = function ($http, $q, $cookies, $rootScope) {
             return new SlashDBService($http, $q, $cookies, $rootScope, this.config);
