@@ -7,7 +7,7 @@
             this.$cookies = $cookies;
             this.$rootScope = $rootScope;
             this.config = config;
-            this.settings = { user: '' };
+            this.settings = { user: '', reversed_url_substitution: {} };
             this.dbDefs = null;
             this.userDefs = null;
             this.queryDefs = null;
@@ -35,6 +35,13 @@
             var handler = this.$rootScope.$on(eventName, callback);
             scope.$on('$destroy', handler);
         };
+        SlashDBService.prototype.escapeValue = function (value) {
+            for (var key in this.settings.reversed_url_substitution) {
+                var substitution = this.settings.reversed_url_substitution[key];
+                value = value.split(key).join(substitution);
+            }
+            return value;
+        };
         SlashDBService.prototype.subscribeLogin = function (scope, callback) {
             this.subscribe(scope, 'slashdb-service-login-event', callback);
         };
@@ -56,7 +63,7 @@
         SlashDBService.prototype.getSettings = function () {
             var _this = this;
             return this.get('/settings.json').then(function (response) {
-                angular.extend(_this.settings, response.data);
+                angular.extend(_this.settings, response.data[0]);
                 _this.notifySettingsChange();
                 return response;
             });

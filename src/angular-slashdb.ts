@@ -17,6 +17,7 @@
      */
     interface ISlashDBSettings {
         user: string;
+        reversed_url_substitution: any;
     }
 
 
@@ -141,7 +142,7 @@
             this.$rootScope = $rootScope;
 
             this.config = config;
-            this.settings = { user: '' };  // local cache for settings provided by the slashDB instance
+            this.settings = { user: '', reversed_url_substitution: {}};  // local cache for settings provided by the slashDB instance
             this.dbDefs = null;            // local cache for slashDB database definitions
             this.userDefs = null;          // local cache for slashDB user definitions
             this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
@@ -175,6 +176,14 @@
             // a helper factory method
             let handler = this.$rootScope.$on(eventName, callback);
             scope.$on('$destroy', handler as AngularEventHandler);
+        }
+        
+        escapeValue(value: string): string {
+            for (let key in this.settings.reversed_url_substitution){
+                let substitution = this.settings.reversed_url_substitution[key]
+                value = value.split(key).join(substitution)
+            }
+            return value
         }
 
         subscribeLogin(scope: angular.IScope, callback: AngularEventHandler): void {
@@ -210,7 +219,7 @@
         getSettings() {
             // fetch settings object from slashDB instance
             return this.get('/settings.json').then((response): {} => {
-                angular.extend(this.settings, response.data);
+                angular.extend(this.settings, response.data[0]);
                 this.notifySettingsChange();
                 return response;
             });
