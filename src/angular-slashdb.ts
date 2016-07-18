@@ -587,6 +587,7 @@
         setAPIKey(apiKeysObj: { [key: string]: string }): void {
             // sets API authentication request prameters
             this.config.apiKeys = apiKeysObj;
+            this.setWithCredentials(false);  // turn off per request withCredentials
             angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         }
 

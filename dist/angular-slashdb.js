@@ -377,6 +377,7 @@
         };
         SlashDBServiceProvider.prototype.setAPIKey = function (apiKeysObj) {
             this.config.apiKeys = apiKeysObj;
+            this.setWithCredentials(false);
             angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         };
         SlashDBServiceProvider.prototype.$get = function ($http, $q, $cookies, $rootScope) {
