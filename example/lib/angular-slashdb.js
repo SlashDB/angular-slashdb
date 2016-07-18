@@ -67,7 +67,9 @@
             var _this = this;
             var data = { login: user, password: password };
             return this.post('/login', data).then(function (response) {
-                _this.$cookies.put('auth_tkt_user', user);
+                if (_this.config.httpRequestConfig.withCredentials != null && !_this.config.httpRequestConfig.withCredentials) {
+                    _this.$cookies.put('auth_tkt', user);
+                }
                 _this.notifyLogin();
                 _this.getSettings();
                 return response;
@@ -347,9 +349,11 @@
             this.config = {
                 endpoint: 'http://localhost',
                 cacheData: false,
+                apiKeys: {},
                 httpRequestConfig: {
                     headers: {},
-                    params: {}
+                    params: {},
+                    withCredentials: true
                 }
             };
         }
@@ -364,6 +368,16 @@
         };
         SlashDBServiceProvider.prototype.setParams = function (params) {
             this.config.httpRequestConfig.params = params;
+            if (this.config.httpRequestConfig.withCredentials != null && this.config.httpRequestConfig.withCredentials) {
+                angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
+            }
+        };
+        SlashDBServiceProvider.prototype.setWithCredentials = function (newValue) {
+            this.config.httpRequestConfig = newValue;
+        };
+        SlashDBServiceProvider.prototype.setAPIKey = function (apiKeysObj) {
+            this.config.apiKeys = apiKeysObj;
+            angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         };
         SlashDBServiceProvider.prototype.$get = function ($http, $q, $cookies, $rootScope) {
             return new SlashDBService($http, $q, $cookies, $rootScope, this.config);

@@ -7,6 +7,7 @@
     interface ISlashDBConfig {
         endpoint: string;
         cacheData: boolean;
+        apiKeys: {};
         httpRequestConfig: angular.IRequestShortcutConfig;
     }
 
@@ -220,7 +221,9 @@
             // perform a login request
             let data: {} = { login: user, password: password };
             return this.post('/login', data).then((response): {} => {
-                this.$cookies.put('auth_tkt_user', user);
+                if (this.config.httpRequestConfig.withCredentials != null && !this.config.httpRequestConfig.withCredentials) {
+                    this.$cookies.put('auth_tkt', user);
+                }
                 this.notifyLogin();
                 this.getSettings();
                 return response;
@@ -542,9 +545,11 @@
             this.config = {
                 endpoint: 'http://localhost',
                 cacheData: false,
+                apiKeys: {},
                 httpRequestConfig: {
                     headers: {},
-                    params: {}
+                    params: {},
+                    withCredentials: true
                 }
             };
         }
@@ -567,6 +572,22 @@
         setParams(params: {}): void {
             // sets default request params of your choice
             this.config.httpRequestConfig.params = params;
+            if (this.config.httpRequestConfig.withCredentials != null && this.config.httpRequestConfig.withCredentials) {
+                angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
+            }
+        }
+
+        setWithCredentials(newValue: boolean): void {
+            // sets flag determinating what method of authentications soudl be used
+            // true - means that angular-shashdb will use cookie based authentication
+            // false - means that the user API keys will be used
+            this.config.httpRequestConfig = newValue;
+        }
+
+        setAPIKey(apiKeysObj: {}): void {
+            // sets API authentication request prameters
+            this.config.apiKeys = apiKeysObj;
+            angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
         }
 
         $get($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService): SlashDBService {
