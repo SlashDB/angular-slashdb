@@ -144,10 +144,10 @@
             this.$rootScope = $rootScope;
 
             this.config = config;
-            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13, refid_prefix: '__href' };  // local cache for settings provided by the slashDB instance
-            this.dbDefs = null;            // local cache for slashDB database definitions
-            this.userDefs = null;          // local cache for slashDB user definitions
-            this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
+            this.settings = {} as ISlashDBSettings;  // local cache for settings provided by the slashDB instance
+            this.dbDefs = null;                      // local cache for slashDB database definitions
+            this.userDefs = null;                    // local cache for slashDB user definitions
+            this.queryDefs = null;                   // local cache for slashDB SQL Pass-thru query definitions
 
             // init this.settings
             this.getSettings();
@@ -182,10 +182,10 @@
 
         escapeValue(value: string): string {
             for (let key in this.settings.reversed_url_substitution) {
-                let substitution = this.settings.reversed_url_substitution[key]
-                value = value.split(key).join(substitution)
+                let substitution = this.settings.reversed_url_substitution[key];
+                value = value.split(key).join(substitution);
             }
-            return value
+            return value;
         }
 
         subscribeLogin(scope: angular.IScope, callback: AngularEventHandler): void {
