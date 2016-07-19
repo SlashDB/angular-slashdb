@@ -18,6 +18,7 @@
     interface ISlashDBSettings {
         user: string;
         reversed_url_substitution: any;
+        default_limit: number;
     }
 
 
@@ -142,7 +143,7 @@
             this.$rootScope = $rootScope;
 
             this.config = config;
-            this.settings = { user: '', reversed_url_substitution: {}};  // local cache for settings provided by the slashDB instance
+            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13};  // local cache for settings provided by the slashDB instance
             this.dbDefs = null;            // local cache for slashDB database definitions
             this.userDefs = null;          // local cache for slashDB user definitions
             this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
