@@ -19,6 +19,7 @@
         user: string;
         reversed_url_substitution: any;
         default_limit: number;
+        refid_prefix: string;
     }
 
 
@@ -143,7 +144,7 @@
             this.$rootScope = $rootScope;
 
             this.config = config;
-            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13};  // local cache for settings provided by the slashDB instance
+            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13, refid_prefix: '__href' };  // local cache for settings provided by the slashDB instance
             this.dbDefs = null;            // local cache for slashDB database definitions
             this.userDefs = null;          // local cache for slashDB user definitions
             this.queryDefs = null;         // local cache for slashDB SQL Pass-thru query definitions
@@ -178,9 +179,9 @@
             let handler = this.$rootScope.$on(eventName, callback);
             scope.$on('$destroy', handler as AngularEventHandler);
         }
-        
+
         escapeValue(value: string): string {
-            for (let key in this.settings.reversed_url_substitution){
+            for (let key in this.settings.reversed_url_substitution) {
                 let substitution = this.settings.reversed_url_substitution[key]
                 value = value.split(key).join(substitution)
             }

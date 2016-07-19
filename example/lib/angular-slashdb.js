@@ -7,7 +7,7 @@
             this.$cookies = $cookies;
             this.$rootScope = $rootScope;
             this.config = config;
-            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13 };
+            this.settings = { user: '', reversed_url_substitution: {}, default_limit: 13, refid_prefix: '__href' };
             this.dbDefs = null;
             this.userDefs = null;
             this.queryDefs = null;
