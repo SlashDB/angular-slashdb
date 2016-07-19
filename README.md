@@ -93,12 +93,13 @@ You can also build from TypeScript source code.
     npm run build
 
 Now you can include _./dist/angular-slashdb.js_ in your project.
+
 **[Back to top](#table-of-contents)**
 
 
 # Fast example
 ```javascript
-var exampleApp = angular.module('exampleApp', ['angularSlashDB']).
+var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
     .config(['slashDBProvider', function (slashDBProvider) {
         // set endpoint to your slashDB instance
         slashDBProvider.setEndpoint('http://localhost:6543');
