@@ -3,6 +3,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 
 [SlashDB](http://www.slashdb.com/) automatically creates REST APIs on top of traditional databases for reading and writing by authorized applications without the need of SQL queries. Angular-slashdb is a small plug-in, allowing you to use SlashDB features more easily in your AngularJS app. Together they allow developers to avoid tedious work and focus on application features that matter.
 
+
 # Table of contents
 
 - [Install angular-slashdb](#install-angular-slashdb)
@@ -13,8 +14,9 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
         - [Clone repo to your local machine](#clone-repo)
         - [Setup environment](#setup-environment)
         - [Building angular-slashdb](#building-angular-slashdb)
+- [Fast example](#fast-example)
 - [Running angular-slashdb example application](#running-angular-slashdb-example-application)
-- [General usage](#general-usage)
+- [General description](#general-description)
     - [Injecting _angularSlashDB_ into your app](#injecting-angularslashdb)
     - [Injecting and configuring _slashDBProvider_](#injecting-slashdbprovider)
         - [Default configuration](#default-angular-shlashdb-configuration)
@@ -49,6 +51,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
             - [createQueryDef, updateQueryDef and deleteQueryDef](#createquerydef-updatequerydef-and-deletequerydef)
             - [getQueries and executeQuery](#getqueries-and-executequery)
 - [Copyright](#copyright)
+
 
 # Install angular-slashdb
 
@@ -92,7 +95,31 @@ You can also build from TypeScript source code.
 Now you can include _./dist/angular-slashdb.js_ in your project.
 **[Back to top](#table-of-contents)**
 
+
+# Fast example
+```javascript
+var exampleApp = angular.module('exampleApp', ['angularSlashDB']).
+    .config(['slashDBProvider', function (slashDBProvider) {
+        // set endpoint to your slashDB instance
+        slashDBProvider.setEndpoint('http://localhost:6543');
+    }])
+    .service('myService', ['slashDB', function (slashDB) {
+        var defaultData = [{ name: 'Ike' }, { name: 'Ann' }];
+        var model = { data: defaultData };
+
+        // update initial model data
+        slashDB.get('/myDB/People.json').then(function(response) {
+                model.data = response.data;
+            });
+        });
+
+        return model;
+    }]);
+```
+see example application folder for more details.
+
 **[Back to top](#table-of-contents)**
+
 
 # Running angular-slashdb example application
 using python3
@@ -105,7 +132,10 @@ or python2
 
 **[Back to top](#table-of-contents)**
 
-# General usage
+
+# General description
+
+**[Back to top](#table-of-contents)**
 
 ## Injecting _angularSlashDB_
 ```javascript
@@ -115,9 +145,10 @@ var exampleApp = angular.module('exampleApp', ['angularSlashDB']);
 
 ## Injecting _slashDBProvider_
 Configure it so that it points to your SlashDB instance i.e.:
+
 ```javascript
-exampleApp.config(['$httpProvider', 'slashDBProvider', function ($httpProvider, slashDBProvider) {
-    // set endpoint to your slashDB instance or leve it pointing to the demo
+exampleApp.config(['slashDBProvider', function (slashDBProvider) {
+    // set endpoint to your slashDB instance
     slashDBProvider.setEndpoint('http://localhost:6543');
 }])
 ```
@@ -144,7 +175,7 @@ You can set _slashDBProvider_ fields by hand, but it's more convenient and safer
 #### setEndpoint
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
-    // by default this is set to '' so you'll need to set this so sane value
+    // by default this is set to '' so you'll need to set this to sane value
     slashDBProvider.setEndpoint('http://localhost:6543');
 }])
 ```
@@ -211,7 +242,6 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return model;
 }])
 ```
-see example application folder for more details.
 
 **[Back to top](#table-of-contents)**
 
@@ -538,6 +568,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 }])
 ```
 **[Back to top](#table-of-contents)**
+
 
 # Copyright
 #### Copyright (C) 2016, VT Enterprise LLC. SlashDB and angular-shlashdb are products of [VT Enterprise LLC](http://vtenterprise.com/).
