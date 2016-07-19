@@ -72,7 +72,7 @@
             var _this = this;
             var data = { login: user, password: password };
             return this.post('/login', data).then(function (response) {
-                if (_this.config.httpRequestConfig.withCredentials != null && !_this.config.httpRequestConfig.withCredentials) {
+                if (_this.config.httpRequestConfig.withCredentials) {
                     _this.$cookies.put('auth_tkt', user);
                 }
                 _this.notifyLogin();
@@ -87,6 +87,12 @@
                 _this.notifyLogout();
                 _this.getSettings();
             });
+        };
+        SlashDBService.prototype.isAuthenticated = function () {
+            if (this.config.httpRequestConfig.withCredentials) {
+                return this.$cookies.get('auth_tkt') != null;
+            }
+            return Object.keys(this.config.apiKeys).length > 0;
         };
         SlashDBService.prototype.uploadLicense = function (licFile) {
             var fd = new FormData();
@@ -240,9 +246,6 @@
         SlashDBService.prototype.deleteQueryDef = function (queryName) {
             var sdbUrl = "/querydef/" + queryName + ".json";
             return this.delete(sdbUrl);
-        };
-        SlashDBService.prototype.isAuthenticated = function () {
-            return this.$cookies.get('auth_tkt') != null;
         };
         SlashDBService.prototype.updateRequestConfig = function (userRequestConfig) {
             return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);

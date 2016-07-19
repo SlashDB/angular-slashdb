@@ -231,7 +231,7 @@
             // perform a login request
             let data: {} = { login: user, password: password };
             return this.post('/login', data).then((response): {} => {
-                if (this.config.httpRequestConfig.withCredentials != null && !this.config.httpRequestConfig.withCredentials) {
+                if (this.config.httpRequestConfig.withCredentials) {
                     this.$cookies.put('auth_tkt', user);
                 }
                 this.notifyLogin();
@@ -247,6 +247,16 @@
                 this.notifyLogout();
                 this.getSettings();
             });
+        }
+
+        isAuthenticated(): boolean {
+            // checks if the user is authenticated
+            if (this.config.httpRequestConfig.withCredentials) {
+                // for withCredentials==true check if a auth_tkt cookie is present
+                return this.$cookies.get('auth_tkt') != null;
+            }
+            // else check if any config.apiKeys ar set
+            return Object.keys(this.config.apiKeys).length > 0;
         }
 
         uploadLicense(licFile: File) {
@@ -429,11 +439,6 @@
             return this.delete(sdbUrl);
         }
 
-        isAuthenticated(): boolean {
-            // check if a auth_tkt cookie is present
-            return this.$cookies.get('auth_tkt') != null;
-        }
-
         private updateRequestConfig(userRequestConfig: {}): angular.IRequestShortcutConfig {
             // this method allows the user to ad-hoc update request attributes i.e. headers, query params etc.
             // for more see https://code.angularjs.org/1.5.7/docs/api/ng/service/$http#usage
@@ -553,7 +558,7 @@
 
         constructor() {
             this.config = {
-                endpoint: '',              // default shashDB endpoint
+                endpoint: '',              // default slashDB endpoint, it's required to set this to a proper value
                 cacheData: false,          // determines if cached data should be used
                 apiKeys: {},               // hold optional API keys
                 httpRequestConfig: {       // user provided request config
