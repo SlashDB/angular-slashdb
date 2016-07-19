@@ -1,37 +1,100 @@
 angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 =========
 
-Angular-shlashdb is a small plug-in, allowing you to user [SlashDB](http://www.slashdb.com/) features more easily in your AngularJS app.
-This plug-in depends on:
+[SlashDB](http://www.slashdb.com/) automatically creates REST APIs on top of traditional databases for reading and writing by authorized applications without the need of SQL queries. Angular-slashdb is a small plug-in, allowing you to use SlashDB features more easily in your AngularJS app. Together they allow developers to avoid tedious work and focus on application features that matter.
+
+# Table of contents
+
+- [Install angular-slashdb](#install-angular-slashdb)
+    - [Dependencies](#dependencies)
+    - [Using Bower](#using-bower)
+    - [Using NPM](#using-npm)
+    - [From source](#from-source)
+        - [Clone repo to your local machine](#clone-repo)
+        - [Setup environment](#setup-environment)
+        - [Building angular-slashdb](#building-angular-slashdb)
+- [Running angular-slashdb example application](#running-angular-slashdb-example-application)
+- [General usage](#general-usage)
+    - [Injecting _angularSlashDB_ into your app](#injecting-angularslashdb)
+    - [Injecting and configuring _slashDBProvider_](#injecting-slashdbprovider)
+        - [Default configuration](#default-angular-shlashdb-configuration)
+        - [_slashDBProvider_ methods usage](#slashdbprovider-methods-usage)
+            - [setEndpoint](#setendpoint)
+            - [setCacheData](#setcachedata)
+            - [setHeaders](#setheaders)
+            - [setParams](#setparams)
+            - [setWithCredentials](#setwithcredentials)
+            - [setAPIKey](#setapikey)
+    - [Injecting _slashDB_ service](#injecting-slashdb-service)
+        - [Example _slashDB_ service usage](#example-slashdb-service-usage)
+        - [_slashDB_ utility methods usage](#slashdb-utility-methods-usage)
+            - [get](#get)
+            - [post](#post)
+            - [put](#put)
+            - [delete](#delete)
+            - [subscribeLogin and notifyLogin](#subscribelogin-and-notifylogin)
+            - [subscribeLogout and notifyLogout](#subscribelogout-and-notifylogout)
+            - [subscribeSettingsChange and notifySettingsChange](#subscribesettingschange-and-notifysettingschange)
+            - [getSettings](#getSettings)
+            - [login](#login)
+            - [logout](#logout)
+            - [isAuthenticated](#isauthenticated)
+            - [uploadLicense](#uploadLicense)
+            - [loadModel and unloadModel](#loadmodel-and-unloadmodel)
+            - [getDBDefs and getDBDef](#getdbdefs-and-getdbdef)
+            - [createDBDef, updateDBDef and deleteDBDef](#createdbdef-updatedbdef-and-deletedbdef)
+            - [getUserDefs and getUserDef](#getuserdefs-and-getuserdef)
+            - [createUserDef, updateUserDef and deleteUserDef](#createuserdef-updateuserdef-and-deleteuserdef)
+            - [getQueryDefs and getQueryDef](#getquerydefs-and-getquerydef)
+            - [createQueryDef, updateQueryDef and deleteQueryDef](#createquerydef-updatequerydef-and-deletequerydef)
+            - [getQueries and executeQuery](#getqueries-and-executequery)
+- [Copyright](#copyright)
+
+# Install angular-slashdb
+
+## Dependencies
 * SlashDB >= 0.9.7
 * AngularJS >= 1.5.7 and < 2.0
 
-Installing angular-shashdb
--------
+**[Back to top](#table-of-contents)**
 
-## Install using [Bower](https://bower.io)
+## Using [Bower](https://bower.io)
     bower install angular-shlashdb
 
-## or using [NPM](https://www.npmjs.com/package/angular-slashdb)
+**[Back to top](#table-of-contents)**
+
+## Using [NPM](https://www.npmjs.com/package/angular-slashdb)
     npm install angular-shlashdb
 
-## You can also build from TypeScript source code.
-### Clone this repo to your local machine
+**[Back to top](#table-of-contents)**
+
+## From source
+You can also build from TypeScript source code.
+
+### Clone repo:
 
     git clone git@github.com:SlashDB/angular-slashdb.git
 
-## Setup environment:
+**[Back to top](#table-of-contents)**
+
+### Setup environment:
+
     cd angular-slashdb
     npm install -g
     typings install
 
+**[Back to top](#table-of-contents)**
 
-## Building angular-slashdb
+### Building angular-slashdb:
+
     npm run build
 
+Now you can include _./dist/angular-slashdb.js_ in your project.
+**[Back to top](#table-of-contents)**
 
-Running angular-slashdb example application
----------
+**[Back to top](#table-of-contents)**
+
+# Running angular-slashdb example application
 using python3
 
     python -m http.server 8000
@@ -40,28 +103,30 @@ or python2
 
     python -m SimpleHTTPServer 8080
 
+**[Back to top](#table-of-contents)**
 
-Usage
---------
-## Inject _angularSlashDB_ into your app
+# General usage
+
+## Injecting _angularSlashDB_
 ```javascript
 var exampleApp = angular.module('exampleApp', ['angularSlashDB']);
 ```
+**[Back to top](#table-of-contents)**
 
-## Inject _slashDBProvider_ and configure it to point to your SlashDB instance
+## Injecting _slashDBProvider_
+Configure it so that it points to your SlashDB instance i.e.:
 ```javascript
 exampleApp.config(['$httpProvider', 'slashDBProvider', function ($httpProvider, slashDBProvider) {
     // set endpoint to your slashDB instance or leve it pointing to the demo
     slashDBProvider.setEndpoint('http://localhost:6543');
-    // caching is ON by default, in this example we'll turn it OFF
-    slashDBProvider.setCacheData(false);
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## Here is the default angular-shlashdb config object:
+### Default angular-shlashdb configuration:
 ```javascript
 config = {
-    endpoint: '',              // default shashDB endpoint
+    endpoint: '',              // default slashDB endpoint, it's required to set this to a proper value
     cacheData: false,          // determines if cached data should be used
     apiKeys: {},               // hold optional API keys
     httpRequestConfig: {       // user provided request config
@@ -71,54 +136,54 @@ config = {
     }
 }
 ```
+**[Back to top](#table-of-contents)**
 
-### You can set its values by hand or use some of the convenience methods we provide with _slashDBProvider_ i.e.
+### _slashDBProvider_ methods usage
+You can set _slashDBProvider_ fields by hand, but it's more convenient and safer to use methods provided by us.
 
-## setEndpoint
+#### setEndpoint
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
-    // by default this is set to '' so you'll need to set this so same value
+    // by default this is set to '' so you'll need to set this so sane value
     slashDBProvider.setEndpoint('http://localhost:6543');
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## setCacheData
+#### setCacheData
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // by default set to true
     slashDBProvider.setCacheData(false);
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## setHeaders
+#### setHeaders
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setHeaders({'Accpet': 'application/json'});
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## setParams
+#### setParams
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setParams({'offset': 2, 'sort': 'LastName', 'distinct': ''});
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## setParams
-```javascript
-exampleApp.config(['slashDBProvider', function (slashDBProvider) {
-    slashDBProvider.setParams({'offset': 2, 'sort': 'LastName', 'distinct': ''});
-}])
-```
-
-## setWithCredentials
+#### setWithCredentials
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setWithCredentials(false);
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## setAPIKey
+#### setAPIKey
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // setting this will also set setWithCredentials to false
@@ -127,11 +192,32 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setAPIKey({});
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-### We also provide an injectable _slashDB_ service
+## Injecting _slashDB_ service
 
+### Example _slashDB_ service usage
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    var defaultData = [{ name: 'Ike' }, { name: 'Ann' }];
+    var model = { data: defaultData };
 
-## get
+    // update initial model data
+    slashDB.get('/myDB/People.json').then(function(response) {
+            model.data = response.data;
+        });
+    });
+
+    return model;
+}])
+```
+see example application folder for more details.
+
+**[Back to top](#table-of-contents)**
+
+### _slashDB_ utility methods usage
+
+#### get
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -149,9 +235,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-
-## post
+#### post
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -167,8 +253,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## put
+#### put
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -181,8 +268,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## delete
+#### delete
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -194,18 +282,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## injecting into a user defined service
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    return {
-        data: [{name: 'Ike'}, {name: 'Ann'}]
-    };
-}])
-```
-
-
-## subscribeLogin and notifyLogin
+#### subscribeLogin and notifyLogin
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeLogin(config.scope, function () {
@@ -217,7 +296,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 }])
 ```
 
-## subscribeLogout and notifyLogout
+#### subscribeLogout and notifyLogout
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeLogout(config.scope, function () {
@@ -228,8 +307,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## subscribeSettingsChange and notifySettingsChange
+#### subscribeSettingsChange and notifySettingsChange
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeSettingsChange(config.scope, function () {
@@ -240,8 +320,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## getSettings
+#### getSettings
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // this will get and/or update slashDB settings data, emit an `slashdb-service-settings-update-event`, and return a Promise for further use
@@ -249,24 +330,40 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## login
+#### login
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.login();  // returns a Promise for further use
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## logout
+#### logout
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.logout();  // returns a Promise for further use
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## uploadLicense
+#### isAuthenticated
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    if (slashDB.isAuthenticated()); {
+        console.log('doing something');
+    } else {
+        console.log('doing something else');
+    }
+    return {};
+}])
+```
+**[Back to top](#table-of-contents)**
+
+#### uploadLicense
 ```javascript
 exampleApp.component('myComponent', {
     template: '<form name="form" ng-submit="$ctrl.submit()">' +
@@ -280,10 +377,11 @@ exampleApp.component('myComponent', {
             slashDB.uploadLicense(licenseFile);
         }
     }
-});
+})
 ```
+**[Back to top](#table-of-contents)**
 
-## loadModel and unloadModel
+#### loadModel and unloadModel
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.loadModel();    // returns a Promise for further use
@@ -291,8 +389,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## getDBDefs and getDBDef
+#### getDBDefs and getDBDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all DB definition
@@ -302,8 +401,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-# createDBDef and updateDBDef and deleteDBDef
+#### createDBDef, updateDBDef and deleteDBDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     var newDBDef = {
@@ -338,9 +438,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-
-## getUserDefs and getUserDef
+#### getUserDefs and getUserDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all User definition
@@ -350,8 +450,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-# createUserDef and updateUserDef and deleteUserDef
+#### createUserDef, updateUserDef and deleteUserDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     var newUserDef = {
@@ -380,9 +481,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-
-## getQueryDefs and getQueryDef
+#### getQueryDefs and getQueryDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all Query definition
@@ -392,8 +493,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-# createQueryDef and updateQueryDef and deleteQueryDef
+#### createQueryDef, updateQueryDef and deleteQueryDef
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     var newQueryDef = {
@@ -421,20 +523,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-## isAuthenticated
-```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {
-    if (slashDB.isAuthenticated()); {
-        console.log('doing something');
-    } else {
-        console.log('doing something else');
-    }
-    return {};
-}])
-```
-
-## getQueries and executeQuery
+#### getQueries and executeQuery
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.getQueries(true).then(function(response) {  // returns a Promise for further use, passing true will omit using cache and re-download data
@@ -446,10 +537,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
-
-What to use angular-slashdb for and when to use it
----------
-
-
+# Copyright
 #### Copyright (C) 2016, VT Enterprise LLC. SlashDB and angular-shlashdb are products of [VT Enterprise LLC](http://vtenterprise.com/).
+
+**[Back to top](#table-of-contents)**
