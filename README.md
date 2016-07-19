@@ -34,6 +34,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
             - [post](#post)
             - [put](#put)
             - [delete](#delete)
+            - [escapeValue](#escapevalue)
             - [subscribeLogin and notifyLogin](#subscribelogin-and-notifylogin)
             - [subscribeLogout and notifyLogout](#subscribelogout-and-notifylogout)
             - [subscribeSettingsChange and notifySettingsChange](#subscribesettingschange-and-notifysettingschange)
@@ -315,6 +316,15 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```
 **[Back to top](#table-of-contents)**
 
+#### escapeValue
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {    
+    var escapedValue = slashDB.escapeValue('AC/DC');  // will return AC__DC if SlashDB is cofigured to substitute '/' with '__'
+    return {};
+}])
+```
+**[Back to top](#table-of-contents)**
+
 #### subscribeLogin and notifyLogin
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
@@ -326,6 +336,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     return {};
 }])
 ```
+**[Back to top](#table-of-contents)**
 
 #### subscribeLogout and notifyLogout
 ```javascript
