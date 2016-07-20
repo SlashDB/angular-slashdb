@@ -175,6 +175,8 @@ config = {
 You can set _slashDBProvider_ fields by hand, but it's more convenient and safer to use methods provided by us.
 
 #### setEndpoint
+Sets default endpoint.
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // by default this is set to '' so you'll need to set this to sane value
@@ -184,6 +186,8 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setCacheData
+Sets _cacheData_ caching flag.
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // by default set to true
@@ -193,6 +197,8 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setHeaders
+Sets default headers of your choice.
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setHeaders({'Accpet': 'application/json'});
@@ -201,6 +207,8 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setParams
+Sets default request params of your choice.
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setParams({'offset': 2, 'sort': 'LastName', 'distinct': ''});
@@ -209,6 +217,10 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setWithCredentials
+Sets flag determinating what method of authentication should be used.
+* true - angular-shashdb will use cookie based authentication
+* false - user API keys will be used
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     slashDBProvider.setWithCredentials(false);
@@ -217,6 +229,8 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setAPIKey
+Sets API authentication request keys.
+
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // setting this will also set setWithCredentials to false
@@ -250,6 +264,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ### _slashDB_ utility methods usage
 
 #### get
+Wrapper around angulars _$http.get_.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -270,6 +286,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### post
+Wrapper around angulars _$http.post_.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -288,6 +306,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### put
+Wrapper around angulars _$http.put_.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -303,6 +323,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### delete
+Wrapper around angulars _$http.delete_.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
@@ -317,6 +339,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### escapeValue
+Replaces characters using mapping defined in SlashDB settings.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {    
     var escapedValue = slashDB.escapeValue('AC/DC');  // will return AC__DC if SlashDB is cofigured to substitute '/' with '__'
@@ -326,10 +350,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### subscribeLogin and notifyLogin
+* _subscribeLogin_ - subscribe to a login event
+* _notifyLogin_ - emmit a login event
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeLogin(config.scope, function () {
-        console.log('an `slashdb-service-login-event` event has occured');
+        console.log('an `slashdb-service-login-event` event has occurred');
     });
 
     slashDB.notifyLogin();  // this will emit `slashdb-service-login-event` event and execute the callback function
@@ -339,10 +366,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### subscribeLogout and notifyLogout
+* _subscribeLogout_ - subscribe to a logout envent
+* _notifyLogout_ - emmit a logout event
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeLogout(config.scope, function () {
-        console.log('an `slashdb-service-settings-update-event` event has occured');
+        console.log('an `slashdb-service-settings-update-event` event has occurred');
     });
 
     slashDB.notifyLogout();  // this will emit `slashdb-service-settings-update-event` event and execute the callback function
@@ -352,10 +382,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### subscribeSettingsChange and notifySettingsChange
+* _subscribeSettingsChange_ - subscribe to a settings change envent
+* _notifySettingsChange_ - emmit a settings change event
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.subscribeSettingsChange(config.scope, function () {
-        console.log('an `slashdb-service-settings-update-event` event has occured');
+        console.log('an `slashdb-service-settings-update-event` event has occurred');
     });
 
     slashDB.notifySettingsChange();  // this will emit `slashdb-service-settings-update-event` event and execute the callback function
@@ -365,6 +398,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### getSettings
+Fetches settings object from slashDB instance.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // this will get and/or update slashDB settings data, emit an `slashdb-service-settings-update-event`, and return a Promise for further use
@@ -375,6 +410,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### login
+Perform a login request.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.login();  // returns a Promise for further use
@@ -384,6 +421,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### logout
+Perform a logout request.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.logout();  // returns a Promise for further use
@@ -393,6 +432,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### isAuthenticated
+Checks if the user is authenticated.
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     if (slashDB.isAuthenticated()); {
@@ -406,6 +447,8 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### uploadLicense
+Uploads licence file data to slashDB instance.
+
 ```javascript
 exampleApp.component('myComponent', {
     template: '<form name="form" ng-submit="$ctrl.submit()">' +
@@ -424,6 +467,9 @@ exampleApp.component('myComponent', {
 **[Back to top](#table-of-contents)**
 
 #### loadModel and unloadModel
+* _loadModel_ - connects a given database on the backend
+* _unloadModel_ - disconnects a given database on the backend
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.loadModel();    // returns a Promise for further use
@@ -434,6 +480,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### getDBDefs and getDBDef
+* _getDBDefs_ - perform a request for definitions for all databases
+* _getDBDef_ - perform a request for definition for a given database
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all DB definition
@@ -446,8 +495,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### createDBDef, updateDBDef and deleteDBDef
+* _createDBDef_ - create a new database definition
+* _updateDBDef_ - update a database definition
+* _deleteDBDef_ - delete a database definition
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // newDBDef might have a diffrent 'shape' on your version of SlashDB
     var newDBDef = {
         'db_encoding': 'utf-8',
         'owners': ['me'],
@@ -483,6 +537,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### getUserDefs and getUserDef
+* _getUserDefs_ - perform a request for definitions for all users
+* _getUserDef_ - perform a request for definition for a given user
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all User definition
@@ -495,8 +552,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### createUserDef, updateUserDef and deleteUserDef
+* _createUserDef_ - create a new user definition
+* _updateUserDef_ - update a user definition
+* _deleteUserDef_ - delete a user definition
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // newUserDef might have a diffrent 'shape' on your version of SlashDB
     var newUserDef = {
         'userdef': ['me'],
         'api_key': 'somekey',
@@ -526,6 +588,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### getQueryDefs and getQueryDef
+* _getQueryDefs_ - perform a request for definitions for all queries
+* _getQueryDef_ - perform a request for definition for a given query
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all Query definition
@@ -538,8 +603,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### createQueryDef, updateQueryDef and deleteQueryDef
+* _createUserDef_ - create a new query definition
+* _updateUserDef_ - update a query definition
+* _deleteUserDef_ - delete a query definition
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
+    // newQueryDef might have a diffrent 'shape' on your version of SlashDB
     var newQueryDef = {
         'owners': ['me'],
         'viewable': true,
@@ -568,6 +638,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### getQueries and executeQuery
+* _getQueries_ - perform a request for a list available SQL Pass-thru queries
+* _executeQuery_ - execute SQL Pass-thru query
+
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.getQueries(true).then(function(response) {  // returns a Promise for further use, passing true will omit using cache and re-download data

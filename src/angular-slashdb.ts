@@ -181,7 +181,7 @@
         }
 
         escapeValue(value: string): string {
-            // replaces characters using mapping defined in SlashDB settings 
+            // replaces characters using mapping defined in SlashDB settings
             for (let key in this.settings.reversed_url_substitution) {
                 let substitution = this.settings.reversed_url_substitution[key];
                 value = value.split(key).join(substitution);
@@ -220,7 +220,7 @@
         }
 
         getSettings() {
-            // fetch settings object from slashDB instance
+            // fetches settings object from slashDB instance
             return this.get('/settings.json').then((response): {} => {
                 angular.extend(this.settings, response.data[0]);
                 this.notifySettingsChange();
@@ -495,7 +495,7 @@
         }
 
         get(url: string, userRequestConfig: {} = {}, force: boolean = false, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
-            // gets all your favorite resources
+            // gets all your favorite resources, wrapper around angulars $http.get
             let sdbUrl = this.getUrl(url);
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let data, response: any;
@@ -529,21 +529,21 @@
         }
 
         post(url: string, data: any, userRequestConfig: {} = {}) {
-            // sends new data to all your favorite resources
+            // sends new data to all your favorite resources, wrapper around angulars $http.post
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.post(sdbUrl, data, requestConfig);
         }
 
         put(url: string, data: any, userRequestConfig: {} = {}) {
-            // sends update data to all your favorite resources
+            // sends update data to all your favorite resources, wrapper around angulars $http.put
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.put(sdbUrl, data, requestConfig);
         }
 
         delete(url: string, userRequestConfig: {} = {}) {
-            // sends delete request to all your favorite resources
+            // sends delete request to all your favorite resources, wrapper around angulars $http.delete
             let sdbUrl: string = this.getUrl(url);
             let requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.delete(sdbUrl, requestConfig);
@@ -576,7 +576,7 @@
         }
 
         setCacheData(cacheData: boolean): void {
-            // sets cacheData boolean flag
+            // sets cacheData caching flag
             this.config.cacheData = cacheData;
         }
 
@@ -601,7 +601,7 @@
         }
 
         setAPIKey(apiKeysObj: { [key: string]: string }): void {
-            // sets API authentication request parameters
+            // sets API authentication request keys
             if (Object.keys(apiKeysObj).length) {
                 // turn off per request withCredentials
                 this.setWithCredentials(false);
