@@ -200,7 +200,7 @@
         }
 
         subscribeLogout(scope: angular.IScope, callback: AngularEventHandler): void {
-            // subscribe to a logout envent
+            // subscribe to a logout event
             this.subscribe(scope, 'slashdb-service-logout-event', callback);
         }
 
@@ -210,7 +210,7 @@
         }
 
         subscribeSettingsChange(scope: angular.IScope, callback: AngularEventHandler): void {
-            // subscribe to a settings change envent
+            // subscribe to a settings change event
             this.subscribe(scope, 'slashdb-service-settings-update-event', callback);
         }
 
@@ -594,7 +594,7 @@
         }
 
         setWithCredentials(newValue: boolean): void {
-            // sets flag determinating what method of authentication should be used
+            // sets flag determining what method of authentication should be used
             // true - means that angular-shashdb will use cookie based authentication
             // false - means that the user API keys will be used
             this.config.httpRequestConfig = newValue;

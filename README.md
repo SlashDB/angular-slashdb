@@ -19,7 +19,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 - [General description](#general-description)
     - [Injecting _angularSlashDB_ into your app](#injecting-angularslashdb)
     - [Injecting and configuring _slashDBProvider_](#injecting-slashdbprovider)
-        - [Default configuration](#default-angular-shlashdb-configuration)
+        - [Default angular-slashdb configuration](#default-angular-slashdb-configuration)
         - [_slashDBProvider_ methods usage](#slashdbprovider-methods-usage)
             - [setEndpoint](#setendpoint)
             - [setCacheData](#setcachedata)
@@ -63,12 +63,12 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 **[Back to top](#table-of-contents)**
 
 ## Using [Bower](https://bower.io)
-    bower install angular-shlashdb
+    bower install angular-slashdb
 
 **[Back to top](#table-of-contents)**
 
 ## Using [NPM](https://www.npmjs.com/package/angular-slashdb)
-    npm install angular-shlashdb
+    npm install angular-slashdb
 
 **[Back to top](#table-of-contents)**
 
@@ -156,7 +156,7 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 ```
 **[Back to top](#table-of-contents)**
 
-### Default angular-shlashdb configuration:
+### Default angular-slashdb configuration:
 ```javascript
 config = {
     endpoint: '',              // default slashDB endpoint, it's required to set this to a proper value
@@ -217,7 +217,7 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setWithCredentials
-Sets flag determinating what method of authentication should be used.
+Sets flag determining what method of authentication should be used.
 * true - angular-shashdb will use cookie based authentication
 * false - user API keys will be used
 
@@ -366,7 +366,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### subscribeLogout and notifyLogout
-* _subscribeLogout_ - subscribe to a logout envent
+* _subscribeLogout_ - subscribe to a logout event
 * _notifyLogout_ - emmit a logout event
 
 ```javascript
@@ -382,7 +382,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### subscribeSettingsChange and notifySettingsChange
-* _subscribeSettingsChange_ - subscribe to a settings change envent
+* _subscribeSettingsChange_ - subscribe to a settings change event
 * _notifySettingsChange_ - emmit a settings change event
 
 ```javascript
@@ -656,6 +656,6 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 
 
 # Copyright
-#### Copyright (C) 2016, VT Enterprise LLC. SlashDB and angular-shlashdb are products of [VT Enterprise LLC](http://vtenterprise.com/).
+#### Copyright (C) 2016, VT Enterprise LLC. SlashDB and angular-slashdb are products of [VT Enterprise LLC](http://vtenterprise.com/).
 
 **[Back to top](#table-of-contents)**
