@@ -108,11 +108,11 @@ var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
         slashDBProvider.setEndpoint('http://localhost:6543');
     }])
     .service('myService', ['slashDB', function (slashDB) {
-        var defaultData = [{ name: 'Ike' }, { name: 'Ann' }];
+        var defaultData = [{ 'Name': 'AC/DC' }, { 'Name': 'Buddy Guy' }];
         var model = { data: defaultData };
 
         // update initial model data
-        slashDB.get('/myDB/People.json').then(function(response) {
+        slashDB.get('/db/Chinook/Artist.json').then(function(response) {
                 model.data = response.data;
             });
         });
@@ -253,10 +253,10 @@ Sets API authentication request keys - provided by your SlashDB admin.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
+    // 'APIKey' and 'otherKey' are examples - contact your SlashDB admin for the real thing
     // setting this will also set setWithCredentials to false
-    // and every get request will have myMagicAPIKey=1234&otherKey=4321 query sting attached automatically
-    // 'myMagicAPIKey' and 'otherKey' are examples - contact your SlashDB admin for the real thing
-    slashDBProvider.setAPIKeys({'myMagicAPIKey': '1234', 'otherKey': '4321'});
+    // and every get request will have APIKey=1234&otherKey=4321 query sting attached automatically
+    slashDBProvider.setAPIKeys({'APIKey': '1234', 'otherKey': '4321'});
     // using setAPIKeys with an empty object will remove all previously set API keys and set setWithCredentials to true
     // so that the default authentication behavior of using cookies will be restored
     slashDBProvider.setAPIKeys({});
@@ -269,11 +269,11 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 ### Example _slashDB_ service usage
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
-    var defaultData = [{ name: 'Ike' }, { name: 'Ann' }];
+    var defaultData = [{ 'Name': 'AC/DC' }, { 'Name': 'Buddy Guy' }];
     var model = { data: defaultData };
 
     // update initial model data
-    slashDB.get('/myDB/People.json').then(function(response) {
+    slashDB.get('/db/Chinook/Artist.json').then(function(response) {
             model.data = response.data;
         });
     });
@@ -297,9 +297,10 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // returns a Promise for further use
     var myRequestCofig = {
         headers: { 'Accpet': 'application/json' },
-        params: { count: ''}
+        params: { count: '' }
     };
-    slashDB.get('/myDB/myTable.json', true, myRequestCofig, false).then(function(response) {
+
+    slashDB.get('/db/Chinook/Artist.json', true, myRequestCofig, false).then(function(response) {
             console.log('data received!');
         });
     });
@@ -318,8 +319,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     var myRequestCofig = {
         headers: { 'Accpet': 'application/json' }  // the default
     };
-    var newRecordData = { 'Name': 'Joe' };
-    slashDB.post('/myDB/myTable.json', newRecordData, myRequestCofig, false).then(function(response) {
+
+    var newRecordData = { 'Name': 'Killswitch Engage' };
+    slashDB.post('/db/Chinook/Artist.json', newRecordData, myRequestCofig, false).then(function(response) {
             console.log('new object created!');
         });
     });
@@ -336,7 +338,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
     // returns a Promise for further use
     var updateRecordData = { 'Email': 'Joe@gmail.com' };
-    slashDB.put('/myDB/myTable/1.json', updateRecordData, {}, false).then(function(response) {
+    slashDB.put('/db/Chinook/Customer/CustomerId/1.json', updateRecordData, {}, false).then(function(response) {
             console.log('object updated!');
         });
     });
@@ -352,7 +354,7 @@ Wrapper around angulars _$http.delete_.
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
     // returns a Promise for further use
-    slashDB.delete('/myDB/myTable/1.json').then(function(response) {
+    slashDB.delete('/db/Chinook/Customer/CustomerId/1.json').then(function(response) {
             console.log('object deleted!');
         });
     });
@@ -509,9 +511,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all DB definition
-    slashDB.getDBDefs(true);      // returns a Promise for further use, passing true will omit using cache and re-download data
+    slashDB.getDBDefs(true);       // returns a Promise for further use, passing true will omit using cache and re-download data
     // get just a selected DB definition
-    slashDB.getDBDef('myDBDef');  // returns a Promise for further use
+    slashDB.getDBDef('Customer');  // returns a Promise for further use
     return {};
 }])
 ```
@@ -527,9 +529,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newDBDef might have a diffrent 'shape' on your version of SlashDB
     var newDBDef = {
         'db_encoding': 'utf-8',
-        'owners': ['me'],
+        'owners': ['admin'],
         'execute': [],
-        'creator': 'me',
+        'creator': 'admin',
         'read': [],
         'db_type': 'sqllite3',
         'autoload': false,
@@ -537,7 +539,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         'connect_status': '',
         'connection': '',
         'foreign_keys': {},
-        'sysuser': {'dbuser': 'me', 'dbpass': 'mypass'},
+        'sysuser': {'dbuser': 'admin', 'dbpass': 'admin'},
         'db_schema': '',
         'offline': false,
         'alternate_key': {},
@@ -566,9 +568,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all User definition
-    slashDB.getUserDefs(true);        // returns a Promise for further use, passing true will omit using cache and re-download data
+    slashDB.getUserDefs(true);    // returns a Promise for further use, passing true will omit using cache and re-download data
     // get just a selected User definition
-    slashDB.getUserDef('myUserDef');  // returns a Promise for further use
+    slashDB.getUserDef('admin');  // returns a Promise for further use
     return {};
 }])
 ```
@@ -583,10 +585,10 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newUserDef might have a diffrent 'shape' on your version of SlashDB
     var newUserDef = {
-        'userdef': ['me'],
+        'userdef': ['newUserDef'],
         'api_key': 'somekey',
         'name': 'newQueryDef',
-        'creator': 'me',
+        'creator': 'admin',
         'edit': [];
         'dbdef': ['someDBDef'];
         'querydef': [];
@@ -617,9 +619,9 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // get all Query definition
-    slashDB.getQueryDefs(true);         // returns a Promise for further use, passing true will omit using cache and re-download data
+    slashDB.getQueryDefs(true);                // returns a Promise for further use, passing true will omit using cache and re-download data
     // get just a selected Query definition
-    slashDB.getQueryDef('myQueryDef');  // returns a Promise for further use
+    slashDB.getQueryDef('customers-in-city');  // returns a Promise for further use
     return {};
 }])
 ```
@@ -667,8 +669,22 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     slashDB.getQueries(true).then(function(response) {  // returns a Promise for further use, passing true will omit using cache and re-download data
-        var data = response.data;                       // i.e. ['fist', second]
-        slashDB.executeQuery(data[0]).then(function(response) {
+        var data = response.data;                       // i.e. response.data = {
+                                                        //   "customers-in-city": {
+                                                        //       "desc": "Customer phone list by city (i.e. London)",
+                                                        //       "parameters": [
+                                                        //           "city"
+                                                        //       ],
+                                                        //       "database": "Chinook"
+                                                        //   },
+                                                        //   "sales-by-year": {
+                                                        //       "desc": "Sales Total by Year",
+                                                        //       "parameters": [],
+                                                        //       "database": "Chinook"
+                                                        //   }
+                                                        // }
+        // lets use 'customers-in-city' with 'city' parameter and 'Chicago' as the city
+        slashDB.executeQuery('/customers-in-city/city/Chicago.json').then(function(response) {
             console.log('a Pass-thru query is done!');
         });
     });
