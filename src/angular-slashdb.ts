@@ -145,9 +145,9 @@
 
             this.config = config;
             this.settings = {} as ISlashDBSettings;  // local cache for settings provided by the slashDB instance
-            this.dbDefs = null;                      // local cache for slashDB database definitions
-            this.userDefs = null;                    // local cache for slashDB user definitions
-            this.queryDefs = null;                   // local cache for slashDB SQL Pass-thru query definitions
+            this.dbDefs = {};                        // local cache for slashDB database definitions
+            this.userDefs = {};                      // local cache for slashDB user definitions
+            this.queryDefs = {};                     // local cache for slashDB SQL Pass-thru query definitions
 
             // init this.settings
             this.getSettings();
@@ -288,7 +288,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.dbDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.dbDefs).length > 0) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.dbDefs };
                     resolve(response);
@@ -296,7 +296,9 @@
             } else {
                 promise = this.get('/dbdef.json').then(
                     function (response) {
-                        this.dbDefs = response.data;
+                        if (response.status == 200) {
+                            this.dbDefs = response.data;
+                        }
                         return response;
                     });
             }
@@ -308,7 +310,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.dbDefs != null && this.dbDefs[dbName] != null) {
+            if (this.config.cacheData && !force && this.dbDefs[dbName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.dbDefs[dbName] };
                     resolve(response);
@@ -342,7 +344,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.userDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.userDefs).length > 0) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.userDefs };
                     resolve(response);
@@ -350,7 +352,9 @@
             } else {
                 promise = this.get('/userdef.json').then(
                     function (response) {
-                        this.userDefs = response.data;
+                        if (response.status == 200) {
+                            this.userDefs = response.data;
+                        }
                         return response;
                     });
             }
@@ -362,7 +366,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.userDefs != null && this.userDefs[userName] != null) {
+            if (this.config.cacheData && !force && this.userDefs[userName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.userDefs[userName] };
                     resolve(response);
@@ -396,7 +400,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.queryDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.queryDefs).length > 0) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.queryDefs };
                     resolve(response);
@@ -404,7 +408,9 @@
             } else {
                 promise = this.get('/querydef.json').then(
                     function (response) {
-                        this.queryDefs = response.data;
+                        if (response.status == 200) {
+                            this.queryDefs = response.data;
+                        }
                         return response;
                     });
             }
@@ -416,7 +422,7 @@
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
             let response: any;
 
-            if (this.config.cacheData && !force && this.queryDefs != null && this.queryDefs[queryName] != null) {
+            if (this.config.cacheData && !force && this.queryDefs[queryName] != null) {
                 promise = this.$q((resolve, reject): void => {
                     response = { data: this.queryDefs[queryName] };
                     resolve(response);
@@ -518,17 +524,18 @@
                 let requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then((response): {} => {
-                        if (Array.isArray(response.data)) {
-                            data = asArray ? response.data : response.data[0];
-                        } else {
-                            data = asArray ? [response.data] : response.data;
-                        }
-                        response.data = data;
+                        if (response.status == 200) {
+                            if (Array.isArray(response.data)) {
+                                data = asArray ? response.data : response.data[0];
+                            } else {
+                                data = asArray ? [response.data] : response.data;
+                            }
+                            response.data = data;
 
-                        if (this.config.cacheData) {
-                            this.storage.setItem(sdbUrl, JSON.stringify(response));
+                            if (this.config.cacheData) {
+                                this.storage.setItem(sdbUrl, JSON.stringify(response));
+                            }
                         }
-
                         return response;
                     });
             }

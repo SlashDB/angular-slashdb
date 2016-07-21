@@ -8,9 +8,9 @@
             this.$rootScope = $rootScope;
             this.config = config;
             this.settings = {};
-            this.dbDefs = null;
-            this.userDefs = null;
-            this.queryDefs = null;
+            this.dbDefs = {};
+            this.userDefs = {};
+            this.queryDefs = {};
             this.getSettings();
             if (window.sessionStorage != null) {
                 this.storage = window.sessionStorage;
@@ -116,7 +116,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.dbDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.dbDefs).length > 0) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.dbDefs };
                     resolve(response);
@@ -124,7 +124,9 @@
             }
             else {
                 promise = this.get('/dbdef.json').then(function (response) {
-                    this.dbDefs = response.data;
+                    if (response.status == 200) {
+                        this.dbDefs = response.data;
+                    }
                     return response;
                 });
             }
@@ -135,7 +137,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.dbDefs != null && this.dbDefs[dbName] != null) {
+            if (this.config.cacheData && !force && this.dbDefs[dbName] != null) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.dbDefs[dbName] };
                     resolve(response);
@@ -163,7 +165,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.userDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.userDefs).length > 0) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.userDefs };
                     resolve(response);
@@ -171,7 +173,9 @@
             }
             else {
                 promise = this.get('/userdef.json').then(function (response) {
-                    this.userDefs = response.data;
+                    if (response.status == 200) {
+                        this.userDefs = response.data;
+                    }
                     return response;
                 });
             }
@@ -182,7 +186,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.userDefs != null && this.userDefs[userName] != null) {
+            if (this.config.cacheData && !force && this.userDefs[userName] != null) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.userDefs[userName] };
                     resolve(response);
@@ -210,7 +214,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.queryDefs != null) {
+            if (this.config.cacheData && !force && Object.keys(this.queryDefs).length > 0) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.queryDefs };
                     resolve(response);
@@ -218,7 +222,9 @@
             }
             else {
                 promise = this.get('/querydef.json').then(function (response) {
-                    this.queryDefs = response.data;
+                    if (response.status == 200) {
+                        this.queryDefs = response.data;
+                    }
                     return response;
                 });
             }
@@ -229,7 +235,7 @@
             if (force === void 0) { force = false; }
             var promise;
             var response;
-            if (this.config.cacheData && !force && this.queryDefs != null && this.queryDefs[queryName] != null) {
+            if (this.config.cacheData && !force && this.queryDefs[queryName] != null) {
                 promise = this.$q(function (resolve, reject) {
                     response = { data: _this.queryDefs[queryName] };
                     resolve(response);
@@ -324,15 +330,17 @@
                 var requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
-                    if (Array.isArray(response.data)) {
-                        data = asArray ? response.data : response.data[0];
-                    }
-                    else {
-                        data = asArray ? [response.data] : response.data;
-                    }
-                    response.data = data;
-                    if (_this.config.cacheData) {
-                        _this.storage.setItem(sdbUrl, JSON.stringify(response));
+                    if (response.status == 200) {
+                        if (Array.isArray(response.data)) {
+                            data = asArray ? response.data : response.data[0];
+                        }
+                        else {
+                            data = asArray ? [response.data] : response.data;
+                        }
+                        response.data = data;
+                        if (_this.config.cacheData) {
+                            _this.storage.setItem(sdbUrl, JSON.stringify(response));
+                        }
                     }
                     return response;
                 });
