@@ -16,6 +16,8 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
         - [Building angular-slashdb](#building-angular-slashdb)
 - [Fast example](#fast-example)
 - [Running angular-slashdb example application](#running-angular-slashdb-example-application)
+    - [Python](#python)
+    - [Node](#node)
 - [General description](#general-description)
     - [Injecting _angularSlashDB_ into your app](#injecting-angularslashdb)
     - [Injecting and configuring _slashDBProvider_](#injecting-slashdbprovider)
@@ -26,7 +28,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
             - [setHeaders](#setheaders)
             - [setParams](#setparams)
             - [setWithCredentials](#setwithcredentials)
-            - [setAPIKey](#setapikey)
+            - [setAPIKeys](#setapikeys)
     - [Injecting _slashDB_ service](#injecting-slashdb-service)
         - [Example _slashDB_ service usage](#example-slashdb-service-usage)
         - [_slashDB_ utility methods usage](#slashdb-utility-methods-usage)
@@ -124,6 +126,11 @@ see example application folder for more details.
 
 
 # Running angular-slashdb example application
+You can directly open _example/index.html_ in your browser of choice or use one of the following methods.
+
+## Python
+while in _example_ directory
+
 using python3
 
     python -m http.server 8000
@@ -131,6 +138,17 @@ using python3
 or python2
 
     python -m SimpleHTTPServer 8080
+
+**[Back to top](#table-of-contents)**
+
+## Node
+install _http-server_
+    
+    npm install http-server -g
+
+then, while in _example_ directory, you can simply
+
+    http-server -p 8000
 
 **[Back to top](#table-of-contents)**
 
@@ -197,20 +215,22 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 **[Back to top](#table-of-contents)**
 
 #### setHeaders
-Sets default headers of your choice.
+Sets default request headers of your choice.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
+    // every request made will have 'Accpet=application/json' header set
     slashDBProvider.setHeaders({'Accpet': 'application/json'});
 }])
 ```
 **[Back to top](#table-of-contents)**
 
 #### setParams
-Sets default request params of your choice.
+Sets default get request params of your choice.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
+    // every get request will have offset=2&sort=LastName&distinct query sting attached automatically
     slashDBProvider.setParams({'offset': 2, 'sort': 'LastName', 'distinct': ''});
 }])
 ```
@@ -228,15 +248,18 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 ```
 **[Back to top](#table-of-contents)**
 
-#### setAPIKey
-Sets API authentication request keys.
+#### setAPIKeys
+Sets API authentication request keys - provided by your SlashDB admin.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // setting this will also set setWithCredentials to false
-    slashDBProvider.setAPIKey({'myMagicAPIKey': '1234', 'otherKey': '4321'});
-    // using setAPIKey with an empty object will remove all previously set API keys and set setWithCredentials to true
-    slashDBProvider.setAPIKey({});
+    // and every get request will have myMagicAPIKey=1234&otherKey=4321 query sting attached automatically
+    // 'myMagicAPIKey' and 'otherKey' are examples - contact your SlashDB admin for the real thing
+    slashDBProvider.setAPIKeys({'myMagicAPIKey': '1234', 'otherKey': '4321'});
+    // using setAPIKeys with an empty object will remove all previously set API keys and set setWithCredentials to true
+    // so that the default authentication behavior of using cookies will be restored
+    slashDBProvider.setAPIKeys({});
 }])
 ```
 **[Back to top](#table-of-contents)**
