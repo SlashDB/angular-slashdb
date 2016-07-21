@@ -63,8 +63,10 @@
         SlashDBService.prototype.getSettings = function () {
             var _this = this;
             return this.get('/settings.json').then(function (response) {
-                angular.extend(_this.settings, response.data[0]);
-                _this.notifySettingsChange();
+                if (response.status == 200) {
+                    angular.extend(_this.settings, response.data[0]);
+                    _this.notifySettingsChange();
+                }
                 return response;
             });
         };
@@ -82,10 +84,13 @@
         };
         SlashDBService.prototype.logout = function () {
             var _this = this;
-            return this.get('/logout').finally(function () {
-                _this.$cookies.remove('auth_tkt');
-                _this.notifyLogout();
-                _this.getSettings();
+            return this.get('/logout').then(function (response) {
+                if (response.status == 200) {
+                    _this.$cookies.remove('auth_tkt');
+                    _this.notifyLogout();
+                    _this.getSettings();
+                }
+                return response;
             });
         };
         SlashDBService.prototype.isAuthenticated = function () {
@@ -263,7 +268,9 @@
             }
             else {
                 promise = this.get('/query.json').then(function (response) {
-                    this.passThruQueries = response.data;
+                    if (response.status == 200) {
+                        this.passThruQueries = response.data;
+                    }
                     return response;
                 });
             }
@@ -287,10 +294,12 @@
                 var requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then(function (response) {
-                    data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
-                    response.data = data;
-                    if (_this.config.cacheData) {
-                        _this.storage.setItem(sdbUrl, JSON.stringify(response));
+                    if (response.status == 200) {
+                        data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
+                        response.data = data;
+                        if (_this.config.cacheData) {
+                            _this.storage.setItem(sdbUrl, JSON.stringify(response));
+                        }
                     }
                     return response;
                 });
@@ -382,7 +391,7 @@
         SlashDBServiceProvider.prototype.setWithCredentials = function (newValue) {
             this.config.httpRequestConfig = newValue;
         };
-        SlashDBServiceProvider.prototype.setAPIKey = function (apiKeysObj) {
+        SlashDBServiceProvider.prototype.setAPIKeys = function (apiKeysObj) {
             if (Object.keys(apiKeysObj).length) {
                 this.setWithCredentials(false);
                 angular.extend(this.config.httpRequestConfig.params, apiKeysObj);

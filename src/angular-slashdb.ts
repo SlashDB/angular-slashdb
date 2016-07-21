@@ -222,8 +222,10 @@
         getSettings() {
             // fetches settings object from slashDB instance
             return this.get('/settings.json').then((response): {} => {
-                angular.extend(this.settings, response.data[0]);
-                this.notifySettingsChange();
+                if (response.status == 200) {
+                    angular.extend(this.settings, response.data[0]);
+                    this.notifySettingsChange();
+                }
                 return response;
             });
         }
@@ -243,10 +245,13 @@
 
         logout() {
             // perform a logout request
-            return this.get('/logout').finally((): void => {
-                this.$cookies.remove('auth_tkt');
-                this.notifyLogout();
-                this.getSettings();
+            return this.get('/logout').then((response): {} => {
+                if (response.status == 200) {
+                    this.$cookies.remove('auth_tkt');
+                    this.notifyLogout();
+                    this.getSettings();
+                }
+                return response;
             });
         }
 
@@ -459,7 +464,9 @@
             } else {
                 promise = this.get('/query.json').then(
                     function (response) {
-                        this.passThruQueries = response.data;
+                        if (response.status == 200) {
+                            this.passThruQueries = response.data;
+                        }
                         return response;
                     });
             }
@@ -481,13 +488,14 @@
                 let requestConfig = this.updateRequestConfig(userRequestConfig);
                 promise = this.$http.get(sdbUrl, requestConfig)
                     .then((response): {} => {
-                        data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
-                        response.data = data;
+                        if (response.status == 200) {
+                            data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
+                            response.data = data;
 
-                        if (this.config.cacheData) {
-                            this.storage.setItem(sdbUrl, JSON.stringify(response));
+                            if (this.config.cacheData) {
+                                this.storage.setItem(sdbUrl, JSON.stringify(response));
+                            }
                         }
-
                         return response;
                     });
             }
@@ -581,12 +589,12 @@
         }
 
         setHeaders(headers: angular.IHttpRequestConfigHeaders): void {
-            // sets default headers of your choice
+            // sets default request headers of your choice
             this.config.httpRequestConfig.headers = headers;
         }
 
         setParams(params: {}): void {
-            // sets default request params of your choice
+            // sets default get request params of your choice
             this.config.httpRequestConfig.params = params;
             if (this.config.httpRequestConfig.withCredentials != null && this.config.httpRequestConfig.withCredentials) {
                 angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
@@ -600,8 +608,8 @@
             this.config.httpRequestConfig = newValue;
         }
 
-        setAPIKey(apiKeysObj: { [key: string]: string }): void {
-            // sets API authentication request keys
+        setAPIKeys(apiKeysObj: { [key: string]: string }): void {
+            // sets API authentication request keys - provided by your slashDB instance admin
             if (Object.keys(apiKeysObj).length) {
                 // turn off per request withCredentials
                 this.setWithCredentials(false);
