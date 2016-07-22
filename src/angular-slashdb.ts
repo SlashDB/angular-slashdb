@@ -183,8 +183,10 @@
         escapeValue(value: string): string {
             // replaces characters using mapping defined in SlashDB settings
             for (let key in this.settings.reversed_url_substitution) {
-                let substitution = this.settings.reversed_url_substitution[key];
-                value = value.split(key).join(substitution);
+                if (this.settings.reversed_url_substitution.hasOwnProperty(key)) {
+                    let substitution = this.settings.reversed_url_substitution[key];
+                    value = value.split(key).join(substitution);
+                }
             }
             return value;
         }

@@ -37,8 +37,10 @@
         };
         SlashDBService.prototype.escapeValue = function (value) {
             for (var key in this.settings.reversed_url_substitution) {
-                var substitution = this.settings.reversed_url_substitution[key];
-                value = value.split(key).join(substitution);
+                if (this.settings.reversed_url_substitution.hasOwnProperty(key)) {
+                    var substitution = this.settings.reversed_url_substitution[key];
+                    value = value.split(key).join(substitution);
+                }
             }
             return value;
         };
