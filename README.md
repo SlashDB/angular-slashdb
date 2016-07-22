@@ -215,8 +215,8 @@ Sets default request headers of your choice.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
-    // every request made will have 'Accpet=application/json' header set
-    slashDBProvider.setHeaders({'Accpet': 'application/json'});
+    // every request made will have 'Accept=application/json' header set
+    slashDBProvider.setHeaders({'Accept': 'application/json'});
 }])
 ```
 **[Back to top](#table-of-contents)**
@@ -281,7 +281,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // passing false as the 4th function param, it's possible to treat returned data as a single value, rather than an array of values (the default)
     // returns a Promise for further use
     var myRequestCofig = {
-        headers: { 'Accpet': 'application/json' },
+        headers: { 'Accept': 'application/json' },
         params: { count: '' }
     };
 
@@ -302,7 +302,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // by passing an request config object, it's possible to control request in a fine grained manner
     // returns a Promise for further use
     var myRequestCofig = {
-        headers: { 'Accpet': 'application/json' }  // the default
+        headers: { 'Accept': 'application/json' }  // the default
     };
 
     var newRecordData = { 'Name': 'Killswitch Engage' };
