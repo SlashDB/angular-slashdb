@@ -4,7 +4,7 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 [SlashDB](http://www.slashdb.com/) automatically creates REST APIs on top of traditional databases for reading and writing by authorized applications without the need of SQL queries. Angular-slashdb is a small plug-in, allowing you to use SlashDB features more easily in your AngularJS app. Together they allow developers to avoid tedious work and focus on application features that matter.
 
 
-# Fast example
+# Usage example
 ```javascript
 var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
     .config(['slashDBProvider', function (slashDBProvider) {
