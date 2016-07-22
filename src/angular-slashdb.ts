@@ -236,9 +236,6 @@
             // perform a login request
             let data: {} = { login: user, password: password };
             return this.post('/login', data).then((response): {} => {
-                if (this.config.httpRequestConfig.withCredentials) {
-                    this.$cookies.put('auth_tkt', user);
-                }
                 this.notifyLogin();
                 this.getSettings();
                 return response;
@@ -600,14 +597,6 @@
         setHeaders(headers: angular.IHttpRequestConfigHeaders): void {
             // sets default request headers of your choice
             this.config.httpRequestConfig.headers = headers;
-        }
-
-        setParams(params: {}): void {
-            // sets default get request params of your choice
-            this.config.httpRequestConfig.params = params;
-            if (this.config.httpRequestConfig.withCredentials != null && this.config.httpRequestConfig.withCredentials) {
-                angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
-            }
         }
 
         setWithCredentials(newValue: boolean): void {

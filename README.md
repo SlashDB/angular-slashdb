@@ -4,6 +4,29 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
 [SlashDB](http://www.slashdb.com/) automatically creates REST APIs on top of traditional databases for reading and writing by authorized applications without the need of SQL queries. Angular-slashdb is a small plug-in, allowing you to use SlashDB features more easily in your AngularJS app. Together they allow developers to avoid tedious work and focus on application features that matter.
 
 
+# Fast example
+```javascript
+var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
+    .config(['slashDBProvider', function (slashDBProvider) {
+        // set endpoint to your slashDB instance
+        slashDBProvider.setEndpoint('http://localhost:6543');
+    }])
+    .service('myService', ['slashDB', function (slashDB) {
+        var defaultData = [{ 'Name': 'AC/DC' }, { 'Name': 'Buddy Guy' }];
+        var model = { data: defaultData };
+
+        // update initial model data
+        slashDB.get('/db/Chinook/Artist.json').then(function(response) {
+                model.data = response.data;
+            });
+        });
+
+        return model;
+    }]);
+```
+see example application folder for more details.
+
+
 # Table of contents
 
 - [Install angular-slashdb](#install-angular-slashdb)
@@ -14,7 +37,6 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
         - [Clone repo to your local machine](#clone-repo)
         - [Setup environment](#setup-environment)
         - [Building angular-slashdb](#building-angular-slashdb)
-- [Fast example](#fast-example)
 - [Running angular-slashdb example application](#running-angular-slashdb-example-application)
     - [Python](#python)
     - [Node](#node)
@@ -26,7 +48,6 @@ angular-slashdb - AngularJS bindings to [SlashDB](http://www.slashdb.com/)
             - [setEndpoint](#setendpoint)
             - [setCacheData](#setcachedata)
             - [setHeaders](#setheaders)
-            - [setParams](#setparams)
             - [setWithCredentials](#setwithcredentials)
             - [setAPIKeys](#setapikeys)
     - [Injecting _slashDB_ service](#injecting-slashdb-service)
@@ -96,31 +117,6 @@ You can also build from TypeScript source code.
     npm run build
 
 Now you can include _./dist/angular-slashdb.js_ in your project.
-
-**[Back to top](#table-of-contents)**
-
-
-# Fast example
-```javascript
-var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
-    .config(['slashDBProvider', function (slashDBProvider) {
-        // set endpoint to your slashDB instance
-        slashDBProvider.setEndpoint('http://localhost:6543');
-    }])
-    .service('myService', ['slashDB', function (slashDB) {
-        var defaultData = [{ 'Name': 'AC/DC' }, { 'Name': 'Buddy Guy' }];
-        var model = { data: defaultData };
-
-        // update initial model data
-        slashDB.get('/db/Chinook/Artist.json').then(function(response) {
-                model.data = response.data;
-            });
-        });
-
-        return model;
-    }]);
-```
-see example application folder for more details.
 
 **[Back to top](#table-of-contents)**
 
@@ -221,17 +217,6 @@ Sets default request headers of your choice.
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {
     // every request made will have 'Accpet=application/json' header set
     slashDBProvider.setHeaders({'Accpet': 'application/json'});
-}])
-```
-**[Back to top](#table-of-contents)**
-
-#### setParams
-Sets default get request params of your choice.
-
-```javascript
-exampleApp.config(['slashDBProvider', function (slashDBProvider) {
-    // every get request will have offset=2&sort=LastName&distinct query sting attached automatically
-    slashDBProvider.setParams({'offset': 2, 'sort': 'LastName', 'distinct': ''});
 }])
 ```
 **[Back to top](#table-of-contents)**

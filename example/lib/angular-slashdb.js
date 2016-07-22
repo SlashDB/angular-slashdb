@@ -76,9 +76,6 @@
             var _this = this;
             var data = { login: user, password: password };
             return this.post('/login', data).then(function (response) {
-                if (_this.config.httpRequestConfig.withCredentials) {
-                    _this.$cookies.put('auth_tkt', user);
-                }
                 _this.notifyLogin();
                 _this.getSettings();
                 return response;
@@ -391,12 +388,6 @@
         };
         SlashDBServiceProvider.prototype.setHeaders = function (headers) {
             this.config.httpRequestConfig.headers = headers;
-        };
-        SlashDBServiceProvider.prototype.setParams = function (params) {
-            this.config.httpRequestConfig.params = params;
-            if (this.config.httpRequestConfig.withCredentials != null && this.config.httpRequestConfig.withCredentials) {
-                angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
-            }
         };
         SlashDBServiceProvider.prototype.setWithCredentials = function (newValue) {
             this.config.httpRequestConfig = newValue;
