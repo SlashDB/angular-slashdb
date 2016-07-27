@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="exampleApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SlashDB example app</title>
+    <link rel="stylesheet" href="vendors/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/main.css">
+    <script src="vendors/jquery-2.2.4.js"></script>
+    <script src="vendors/bootstrap.js"></script>
+    <script src="vendors/angular.js"></script>
+    <script src="vendors/angular-cookies.js"></script>
+    <script src="lib/angular-slashdb.js"></script>
+    <script src="lib/main.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Example SlashDB App</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <login-form></login-form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <artist-table></artist-table>
+    </div>
+</body>
+
+</html>
