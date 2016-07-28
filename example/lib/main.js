@@ -4,8 +4,8 @@
 
         // configure slashDB using the slashDBProvider
         .config(['$httpProvider', 'slashDBProvider', function ($httpProvider, slashDBProvider) {
-            // set endpoint to your slashDB instance or leave it pointing to the demo site
-            slashDBProvider.setEndpoint('http://beta.slashdb.com');
+            // set endpoint to your slashDB instance or leave it pointing to the beta site
+            slashDBProvider.setEndpoint('https://beta.slashdb.com');
             // caching is ON by default, in this example we'll turn it OFF
             slashDBProvider.setCacheData(false);
         }])
