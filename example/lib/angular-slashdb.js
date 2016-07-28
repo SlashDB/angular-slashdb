@@ -109,15 +109,18 @@
             if (this.config.httpRequestConfig.withCredentials) {
                 return this.$cookies.get('auth_tkt') != null;
             }
-            var tmp = Object.keys(this.config.apiKeys), k, v;
-            for (var i = 0, tmpl = tmp.length; i < tmpl; i++) {
-                k = tmp[i];
-                v = this.config.httpRequestConfig.params[k];
-                if (v == null && v != this.config.apiKeys[k]) {
-                    return false;
+            var tmp = Object.keys(this.config.apiKeys), tmpl = tmp.length, k, v;
+            if (tmpl > 0) {
+                for (var i = 0; i < tmpl; i++) {
+                    k = tmp[i];
+                    v = this.config.httpRequestConfig.params[k];
+                    if (v == null && v != this.config.apiKeys[k]) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
+            return false;
         };
         SlashDBService.prototype.uploadLicense = function (licFile) {
             var fd = new FormData();

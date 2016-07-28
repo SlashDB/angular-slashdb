@@ -281,15 +281,18 @@
                 return this.$cookies.get('auth_tkt') != null;
             }
             // else check if any config.apiKeys ar set
-            let tmp = Object.keys(this.config.apiKeys), k, v;
-            for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
-                k = tmp[i]
-                v = this.config.httpRequestConfig.params[k];
-                if (v == null && v != this.config.apiKeys[k]) {
-                    return false;
+            let tmp = Object.keys(this.config.apiKeys), tmpl = tmp.length, k, v;
+            if (tmpl > 0) {
+                for (let i = 0; i < tmpl; i++) {
+                    k = tmp[i]
+                    v = this.config.httpRequestConfig.params[k];
+                    if (v == null && v != this.config.apiKeys[k]) {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
+            return false;
         }
 
         uploadLicense(licFile: File) {
