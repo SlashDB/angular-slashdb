@@ -19,12 +19,17 @@
                     name: '',
                     passwd: ''
                 },
+                loginErrorVisible: false,
                 isAuthenticated: function () {
                     return slashDB.isAuthenticated();
                 },
                 login: function () {
                     if (service.user.name != '' && service.user.passwd != '') {
-                        slashDB.login(service.user.name, service.user.passwd);
+                        slashDB.login(service.user.name, service.user.passwd).catch(function () {
+                            service.loginErrorVisible = true;
+                        });
+                    } else {
+                        service.loginErrorVisible = true;
                     }
                 },
                 logout: function () {
@@ -52,6 +57,12 @@
                         <button type="button" class="btn btn-primary navbar-right" ng-click="$ctrl.credentials.logout()">Logout</button> \
                     </form> \
                     <p class="navbar-text navbar-right">Signed in as <strong>{{ $ctrl.credentials.user.name }}</strong></p> \
+                </div> \
+                <div ng-show="$ctrl.credentials.loginErrorVisible" class="alert alert-danger" role="alert" style="position:fixed;z-index:9999;top:60px;left:40%;width:250px;"> \
+                    <button type="button" class="close" aria-label="login error" ng-click="$ctrl.credentials.loginErrorVisible = false"> \
+                        <span aria-hidden="true">&times;</span> \
+                    </button> \
+                    Incorrect login or password. \
                 </div> \
                 ',
             controller: function ($scope, credentials, slashDB) {
