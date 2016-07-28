@@ -236,6 +236,14 @@
             // perform a login request
             let data: {} = { login: user, password: password };
             return this.post('/login', data).then((response): {} => {
+                if (!this.config.httpRequestConfig.withCredentials) {
+                    // extend request params with apiKeys
+                    angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
+                    // store apiKeys in localStorage
+                    localStorage.setItem('apiKeys', JSON.stringify(this.config.apiKeys));
+                    // make sure that withCredentials is set to false
+                    this.config.httpRequestConfig.withCredentials = false;
+                }
                 this.notifyLogin();
                 this.getSettings();
                 return response;
@@ -246,7 +254,20 @@
             // perform a logout request
             return this.get('/logout').then((response): {} => {
                 if (response.status == 200) {
-                    this.$cookies.remove('auth_tkt');
+                    if (this.config.httpRequestConfig.withCredentials) {
+                        // remove auth_tkt from cookies
+                        this.$cookies.remove('auth_tkt');
+                    } else {
+                        // remove apiKeys from request params
+                        let tmp = Object.keys(this.config.apiKeys);
+                        for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                            delete this.config.httpRequestConfig.params[tmp[i]];
+                        }
+                        // remove apiKeys form localStorage
+                        localStorage.removeItem('apiKeys');
+                        // make sure that withCredentials is set to true
+                        this.config.httpRequestConfig.withCredentials = true;
+                    }
                     this.notifyLogout();
                     this.getSettings();
                 }
@@ -261,7 +282,15 @@
                 return this.$cookies.get('auth_tkt') != null;
             }
             // else check if any config.apiKeys ar set
-            return Object.keys(this.config.apiKeys).length > 0;
+            let tmp = Object.keys(this.config.apiKeys), k, v;
+            for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                k = tmp[i]
+                v = this.config.httpRequestConfig.params[k];
+                if (v == null && v != this.config.apiKeys[k]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         uploadLicense(licFile: File) {
@@ -453,7 +482,7 @@
         private updateRequestConfig(userRequestConfig: {}): angular.IRequestShortcutConfig {
             // this method allows the user to ad-hoc update request attributes i.e. headers, query params etc.
             // for more see https://code.angularjs.org/1.5.7/docs/api/ng/service/$http#usage
-            return angular.extend({}, this.config.httpRequestConfig, userRequestConfig);
+            return angular.merge({}, this.config.httpRequestConfig, userRequestConfig);
         }
 
         getQueries(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
@@ -603,30 +632,33 @@
             // sets flag determining what method of authentication should be used
             // true - means that angular-shashdb will use cookie based authentication
             // false - means that the user API keys will be used
-            this.config.httpRequestConfig = newValue;
+            this.config.httpRequestConfig.withCredentials = newValue;
         }
 
         setAPIKeys(apiKeysObj: { [key: string]: string }): void {
             // sets API authentication request keys - provided by your slashDB instance admin
-            if (Object.keys(apiKeysObj).length) {
-                // turn off per request withCredentials
-                this.setWithCredentials(false);
-                // add API keys to request params
-                angular.extend(this.config.httpRequestConfig.params, apiKeysObj);
-            } else {
-                // turn on per request withCredentials
-                this.setWithCredentials(true);
-                // delete all previously set API keys form request params
-                let tmp = Object.keys(this.config.apiKeys);
-                for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
-                    delete this.config.httpRequestConfig.params[i];
+            let withCredentials = Object.keys(apiKeysObj).length <= 0;
+            this.setWithCredentials(withCredentials);
+            angular.extend(this.config.apiKeys, apiKeysObj);
+        }
+
+        private setupAPIKeysFromLocalStorage() {
+            // check for api key stored in localStorage and if present, set them as request params
+            let apiKeys = localStorage.getItem('apiKeys');
+            if (apiKeys != null) {
+                apiKeys = JSON.parse(apiKeys);
+                if (angular.equals(apiKeys, this.config.apiKeys)) {
+                    angular.extend(this.config.httpRequestConfig.params, apiKeys);
+                    // make sure that withCredentials is set to false
+                    this.setWithCredentials(false);
                 }
             }
-            this.config.apiKeys = apiKeysObj;
         }
 
         $get($http: angular.IHttpService, $q: angular.IQService, $cookies: angular.cookies.ICookiesService, $rootScope: angular.IRootScopeService): SlashDBService {
             // returns a SlashDBService instance
+            // get apiKeys form localStorage and use them for authentication
+            this.setupAPIKeysFromLocalStorage();
             return new SlashDBService($http, $q, $cookies, $rootScope, this.config);
         }
     }
