@@ -235,7 +235,8 @@ exampleApp.config(['slashDBProvider', function (slashDBProvider) {
 
 #### setAPIKeys
 Sets API authentication request keys - provided by your SlashDB admin.
-Important: this will be only used after the _(SlashDBService) login_ method has been used.
+
+**Important**: this will be only used after the _(slashDB service) [login](#login)_ method has been used.
 
 ```javascript
 exampleApp.config(['slashDBProvider', function (slashDBProvider) {

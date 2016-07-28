@@ -636,7 +636,7 @@
 
         setAPIKeys(apiKeysObj: { [key: string]: string }): void {
             // sets API authentication request keys - provided by your slashDB instance admin
-            // important: this will be only used after the (SlashDBService) login method has been used
+            // important: this will be only used after the (slashDB service) login method has been used
             let withCredentials = Object.keys(apiKeysObj).length <= 0;
             this.setWithCredentials(withCredentials);
             angular.extend(this.config.apiKeys, apiKeysObj);
