@@ -252,27 +252,26 @@
 
         logout() {
             // perform a logout request
-            return this.get('/logout').then((response): {} => {
-                if (response.status == 200) {
-                    if (this.config.httpRequestConfig.withCredentials) {
-                        // remove auth_tkt from cookies
-                        this.$cookies.remove('auth_tkt');
-                    } else {
-                        // remove apiKeys from request params
-                        let tmp = Object.keys(this.config.apiKeys);
-                        for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
-                            delete this.config.httpRequestConfig.params[tmp[i]];
-                        }
-                        // remove apiKeys form localStorage
-                        localStorage.removeItem('apiKeys');
-                        // make sure that withCredentials is set to true
-                        this.config.httpRequestConfig.withCredentials = true;
+            let handler = (response) => {
+                if (this.config.httpRequestConfig.withCredentials) {
+                    // remove auth_tkt from cookies
+                    this.$cookies.remove('auth_tkt');
+                } else {
+                    // remove apiKeys from request params
+                    let tmp = Object.keys(this.config.apiKeys);
+                    for (let i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                        delete this.config.httpRequestConfig.params[tmp[i]];
                     }
-                    this.notifyLogout();
-                    this.getSettings();
+                    // remove apiKeys form localStorage
+                    localStorage.removeItem('apiKeys');
+                    // make sure that withCredentials is set to true
+                    this.config.httpRequestConfig.withCredentials = true;
                 }
-                return response;
-            });
+                this.notifyLogout();
+                this.getSettings();
+            }
+
+            return this.get('/logout', {}, true).then(handler, handler);
         }
 
         isAuthenticated(): boolean {

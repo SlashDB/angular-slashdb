@@ -88,24 +88,22 @@
         };
         SlashDBService.prototype.logout = function () {
             var _this = this;
-            return this.get('/logout').then(function (response) {
-                if (response.status == 200) {
-                    if (_this.config.httpRequestConfig.withCredentials) {
-                        _this.$cookies.remove('auth_tkt');
-                    }
-                    else {
-                        var tmp = Object.keys(_this.config.apiKeys);
-                        for (var i = 0, tmpl = tmp.length; i < tmpl; i++) {
-                            delete _this.config.httpRequestConfig.params[tmp[i]];
-                        }
-                        localStorage.removeItem('apiKeys');
-                        _this.config.httpRequestConfig.withCredentials = true;
-                    }
-                    _this.notifyLogout();
-                    _this.getSettings();
+            var handler = function (response) {
+                if (_this.config.httpRequestConfig.withCredentials) {
+                    _this.$cookies.remove('auth_tkt');
                 }
-                return response;
-            });
+                else {
+                    var tmp = Object.keys(_this.config.apiKeys);
+                    for (var i = 0, tmpl = tmp.length; i < tmpl; i++) {
+                        delete _this.config.httpRequestConfig.params[tmp[i]];
+                    }
+                    localStorage.removeItem('apiKeys');
+                    _this.config.httpRequestConfig.withCredentials = true;
+                }
+                _this.notifyLogout();
+                _this.getSettings();
+            };
+            return this.get('/logout', {}, true).then(handler, handler);
         };
         SlashDBService.prototype.isAuthenticated = function () {
             if (this.config.httpRequestConfig.withCredentials) {
