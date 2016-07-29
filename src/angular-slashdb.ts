@@ -278,7 +278,7 @@
             // checks if the user is authenticated
             if (this.config.httpRequestConfig.withCredentials) {
                 // for withCredentials==true check if a auth_tkt cookie is present
-                return this.$cookies.get('auth_tkt') != null;
+                return this.$cookies.get('auth_tkt') != null || (this.settings.user != null && this.settings.user != '');
             }
             // else check if any config.apiKeys ar set
             let tmp = Object.keys(this.config.apiKeys), tmpl = tmp.length, k, v;
