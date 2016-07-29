@@ -269,7 +269,7 @@
                 }
                 this.notifyLogout();
                 this.getSettings();
-            }
+            };
 
             return this.get('/logout', {}, true).then(handler, handler);
         }
@@ -284,7 +284,7 @@
             let tmp = Object.keys(this.config.apiKeys), tmpl = tmp.length, k, v;
             if (tmpl > 0) {
                 for (let i = 0; i < tmpl; i++) {
-                    k = tmp[i]
+                    k = tmp[i];
                     v = this.config.httpRequestConfig.params[k];
                     if (v == null && v != this.config.apiKeys[k]) {
                         return false;
