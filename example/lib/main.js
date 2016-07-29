@@ -9,7 +9,7 @@
             // caching is ON by default, in this example we'll turn it OFF
             slashDBProvider.setCacheData(false);
             // api key(s) will  on your SlashDB instance
-            slashDBProvider.setAPIKeys({ 'apikey': 'angular-slashdb-example-key' });
+            slashDBProvider.setAPIKeys({ 'apikey': 'angular-slashdb-example-key' });  // comment this line out if you want to use cookie based authentication
         }])
 
         // simple service to store user credentials and some helper functions
