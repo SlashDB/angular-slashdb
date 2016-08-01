@@ -215,10 +215,6 @@
         // artist table component
         .component('artistTable', {
             template: ' \
-            <p>This is a simple example app powered by \
-            <a href="http://slashdb.com/" target="_blank">SlashDB</a>, \
-            <a href="https://github.com/SlashDB/angular-slashdb" target="_blank">angular-slashdb</a> and \
-            <a href="https://angularjs.org/" target="_blank">AngularJS</a>. \
             <p ng-cloak ng-show="!$ctrl.credentials.isAuthenticated()"> \
                 Try and login with <strong>username</strong>: <em>angular</em> and <strong>password</strong>: <em>angular</em>. \
             </p> \

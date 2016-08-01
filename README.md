@@ -24,7 +24,7 @@ var exampleApp = angular.module('exampleApp', ['angularSlashDB'])
         return model;
     }]);
 ```
-see example application folder for more details.
+see [example application](https://slashdb.github.io/angular-slashdb/) folder for more details.
 
 
 # Table of contents
