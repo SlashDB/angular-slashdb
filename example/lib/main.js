@@ -124,7 +124,7 @@
             };
 
             var service = {
-                url: '/db/Chinook/Artist.json',
+                url: '/db/SQLiteChinook/Artist.json',
                 requestConfig: {
                     params: angular.copy(defaultParams)
                 },
