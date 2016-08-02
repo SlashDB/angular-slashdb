@@ -79,7 +79,6 @@
                 if (!_this.config.httpRequestConfig.withCredentials) {
                     angular.extend(_this.config.httpRequestConfig.params, _this.config.apiKeys);
                     localStorage.setItem('apiKeys', JSON.stringify(_this.config.apiKeys));
-                    _this.config.httpRequestConfig.withCredentials = false;
                 }
                 _this.notifyLogin();
                 _this.getSettings();
@@ -98,7 +97,6 @@
                         delete _this.config.httpRequestConfig.params[tmp[i]];
                     }
                     localStorage.removeItem('apiKeys');
-                    _this.config.httpRequestConfig.withCredentials = true;
                 }
                 _this.notifyLogout();
                 _this.getSettings();

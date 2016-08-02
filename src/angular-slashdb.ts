@@ -241,8 +241,6 @@
                     angular.extend(this.config.httpRequestConfig.params, this.config.apiKeys);
                     // store apiKeys in localStorage
                     localStorage.setItem('apiKeys', JSON.stringify(this.config.apiKeys));
-                    // make sure that withCredentials is set to false
-                    this.config.httpRequestConfig.withCredentials = false;
                 }
                 this.notifyLogin();
                 this.getSettings();
@@ -264,8 +262,6 @@
                     }
                     // remove apiKeys form localStorage
                     localStorage.removeItem('apiKeys');
-                    // make sure that withCredentials is set to true
-                    this.config.httpRequestConfig.withCredentials = true;
                 }
                 this.notifyLogout();
                 this.getSettings();
