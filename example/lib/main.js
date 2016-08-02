@@ -91,9 +91,11 @@
                     }
                 },
                 getData: function (config) {
+                    var dataUrl = config.baseUrl + '.json';
+
                     var setData = function () {
                         // through config.requestConfig the developer can set additional, ad-hoc, request attributes
-                        slashDB.get(config.url, config.requestConfig).then(function (response) {
+                        slashDB.get(dataUrl, config.requestConfig).then(function (response) {
                             service.data = response.data;
                         }, function () {
                             service.clearData();
@@ -120,7 +122,7 @@
             };
 
             var service = {
-                url: '/db/SQLiteChinook/Artist.json',
+                baseUrl: '/db/SQLiteChinook/Artist',
                 requestConfig: {
                     params: angular.copy(defaultParams)
                 },
@@ -301,7 +303,7 @@
 
                 ctrl.addArtist = function () {
                     if (ctrl.artist.Name != null && ctrl.artist.Name != '') {
-                        slashDB.post(artistDataConfig.url, ctrl.artist).then(function (response) {
+                        slashDB.post(artistDataConfig.baseUrl, ctrl.artist).then(function (response) {
                             ctrl.artist = '';
                             tableData.getData(artistDataConfig);
                         }, function (response) {
