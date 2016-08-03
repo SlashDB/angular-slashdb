@@ -120,9 +120,12 @@
             }
             return false;
         };
-        SlashDBService.prototype.uploadLicense = function (licFile) {
+        SlashDBService.prototype.uploadLicense = function (licFile, onlyValidate) {
             var fd = new FormData();
-            var userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined } };
+            var params = {};
+            if (onlyValidate)
+                params['only-validate'] = '';
+            var userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined }, params: params };
             fd.append('license', licFile);
             return this.post('/license', fd, userRequestConfig);
         };

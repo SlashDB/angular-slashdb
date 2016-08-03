@@ -291,10 +291,12 @@
             return false;
         }
 
-        uploadLicense(licFile: File) {
+        uploadLicense(licFile: File, onlyValidate: Boolean) {
             // uploads licence file data to slashDB instance
             let fd = new FormData();
-            let userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined } };
+            let params = {};
+            if (onlyValidate) params['only-validate'] = '';
+            let userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined }, params: params};
             fd.append('license', licFile);
             return this.post('/license', fd, userRequestConfig);
         }

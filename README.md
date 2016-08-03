@@ -459,7 +459,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 **[Back to top](#table-of-contents)**
 
 #### uploadLicense
-Uploads licence file data to slashDB instance.
+Uploads licence file data to slashDB instance. By default license is validated and installed in SlashDB. If second (Boolean) argument is set true then license data will be only validated (license won't be installed).
 
 ```javascript
 exampleApp.component('myComponent', {
@@ -471,7 +471,7 @@ exampleApp.component('myComponent', {
         var ctrl = this;
         ctrl.submit = function(e) {
             var licenseFile = $element[0].childNodes[0].childNodes[0].files[0]);
-            slashDB.uploadLicense(licenseFile);
+            slashDB.uploadLicense(licenseFile, false);
         }
     }
 })
