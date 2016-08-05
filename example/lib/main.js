@@ -323,7 +323,6 @@
 
                 // update selected artist
                 ctrl.updateArtist = function (artist) {
-                    console.log(artist.Name);
                     tableData.updateItem('/ArtistId/' + artist.ArtistId, { Name: artist.Name }, artistDataConfig, function (r) {
                         artist.editing = false;
                     });
