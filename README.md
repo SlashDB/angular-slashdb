@@ -65,7 +65,7 @@ see [example application](https://slashdb.github.io/angular-slashdb/) folder for
             - [login](#login)
             - [logout](#logout)
             - [isAuthenticated](#isauthenticated)
-            - [uploadLicense](#uploadLicense)
+            - [uploadLicense](#uploadlicense)
             - [loadModel and unloadModel](#loadmodel-and-unloadmodel)
             - [getDBDefs and getDBDef](#getdbdefs-and-getdbdef)
             - [createDBDef, updateDBDef and deleteDBDef](#createdbdef-updatedbdef-and-deletedbdef)
@@ -426,7 +426,7 @@ Perform a login request.
 
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
-    slashDB.login();  // returns a Promise for further use
+    slashDB.login('your-slasdb-user-name', 'your-slasdb-password');  // returns a Promise for further use
     return {};
 }])
 ```
