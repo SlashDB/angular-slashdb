@@ -296,7 +296,7 @@
             let fd = new FormData();
             let params = {};
             if (onlyValidate) params['only-validate'] = '';
-            let userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined }, params: params};
+            let userRequestConfig = { transformRequest: angular.identity, headers: { 'Content-Type': undefined }, params: params };
             fd.append('license', licFile);
             return this.post('/license', fd, userRequestConfig);
         }
