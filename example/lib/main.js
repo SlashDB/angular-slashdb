@@ -156,7 +156,7 @@
 
     .service('artistDataConfig', ['tableData', function (tableData) {
         var defaultParams = {
-            limit: 25,
+            limit: 1000,
             sort: 'ArtistId',
             offset: 0
         };
