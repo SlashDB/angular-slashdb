@@ -11,7 +11,7 @@
             this.dbDefs = {};
             this.userDefs = {};
             this.queryDefs = {};
-            this.getSettings();
+            this.setupSettings();
             if (window.sessionStorage != null) {
                 this.storage = window.sessionStorage;
             }
@@ -62,7 +62,7 @@
         SlashDBService.prototype.notifySettingsChange = function () {
             return this.$rootScope.$emit('slashdb-service-settings-update-event');
         };
-        SlashDBService.prototype.getSettings = function () {
+        SlashDBService.prototype.setupSettings = function () {
             var _this = this;
             return this.get('/settings.json').then(function (response) {
                 if (response.status == 200) {
@@ -77,7 +77,7 @@
             var data = { login: user, password: password };
             return this.post('/login', data).then(function (response) {
                 _this.notifyLogin();
-                _this.getSettings();
+                _this.setupSettings();
                 return response;
             });
         };
@@ -87,7 +87,7 @@
                 if (response.status == 200) {
                     _this.$cookies.remove('auth_tkt');
                     _this.notifyLogout();
-                    _this.getSettings();
+                    _this.setupSettings();
                 }
                 return response;
             });
