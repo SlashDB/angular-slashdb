@@ -150,7 +150,7 @@
             this.queryDefs = {};                     // local cache for slashDB SQL Pass-thru query definitions
 
             // init this.settings
-            this.getSettings();
+            this.setupSettings();
 
             // use window.sessionStorage if available else use a simple dummy sessionStorage object
             if (window.sessionStorage != null) {
@@ -221,7 +221,7 @@
             return this.$rootScope.$emit('slashdb-service-settings-update-event');
         }
 
-        getSettings() {
+        setupSettings() {
             // fetches settings object from slashDB instance
             return this.get('/settings.json').then((response): {} => {
                 if (response.status == 200) {
@@ -243,7 +243,7 @@
                     localStorage.setItem('apiKeys', JSON.stringify(this.config.apiKeys));
                 }
                 this.notifyLogin();
-                this.getSettings();
+                this.setupSettings();
                 return response;
             });
         }
@@ -264,7 +264,7 @@
                     localStorage.removeItem('apiKeys');
                 }
                 this.notifyLogout();
-                this.getSettings();
+                this.setupSettings();
             };
 
             return this.get('/logout', {}, true).then(handler, handler);

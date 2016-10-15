@@ -11,7 +11,7 @@
             this.dbDefs = {};
             this.userDefs = {};
             this.queryDefs = {};
-            this.getSettings();
+            this.setupSettings();
             if (window.sessionStorage != null) {
                 this.storage = window.sessionStorage;
             }
@@ -62,7 +62,7 @@
         SlashDBService.prototype.notifySettingsChange = function () {
             return this.$rootScope.$emit('slashdb-service-settings-update-event');
         };
-        SlashDBService.prototype.getSettings = function () {
+        SlashDBService.prototype.setupSettings = function () {
             var _this = this;
             return this.get('/settings.json').then(function (response) {
                 if (response.status == 200) {
@@ -81,7 +81,7 @@
                     localStorage.setItem('apiKeys', JSON.stringify(_this.config.apiKeys));
                 }
                 _this.notifyLogin();
-                _this.getSettings();
+                _this.setupSettings();
                 return response;
             });
         };
@@ -99,7 +99,7 @@
                     localStorage.removeItem('apiKeys');
                 }
                 _this.notifyLogout();
-                _this.getSettings();
+                _this.setupSettings();
             };
             return this.get('/logout', {}, true).then(handler, handler);
         };

@@ -61,7 +61,7 @@ see [example application](https://slashdb.github.io/angular-slashdb/) folder for
             - [subscribeLogin and notifyLogin](#subscribelogin-and-notifylogin)
             - [subscribeLogout and notifyLogout](#subscribelogout-and-notifylogout)
             - [subscribeSettingsChange and notifySettingsChange](#subscribesettingschange-and-notifysettingschange)
-            - [getSettings](#getSettings)
+            - [setupSettings](#setupSettings)
             - [login](#login)
             - [logout](#logout)
             - [isAuthenticated](#isauthenticated)
@@ -139,7 +139,7 @@ or python2
 
 ## Node
 install _http-server_
-    
+
     npm install http-server -g
 
 then, while in _example_ directory, you can simply
@@ -354,7 +354,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 Replaces characters using mapping defined in SlashDB settings.
 
 ```javascript
-exampleApp.service('myService', ['slashDB', function (slashDB) {    
+exampleApp.service('myService', ['slashDB', function (slashDB) {
     var escapedValue = slashDB.escapeValue('AC/DC');  // will return AC__DC if SlashDB is cofigured to substitute '/' with '__'
     return {};
 }])
@@ -409,13 +409,13 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 ```
 **[Back to top](#table-of-contents)**
 
-#### getSettings
-Fetches settings object from slashDB instance.
+#### setupSettings
+Fetches and stores settings object from SlashDB instance.
 
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // this will get and/or update slashDB settings data, emit an `slashdb-service-settings-update-event`, and return a Promise for further use
-    slashDB.getSettings();
+    slashDB.setupSettings();
     return {};
 }])
 ```
