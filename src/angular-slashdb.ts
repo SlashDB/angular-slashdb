@@ -47,6 +47,7 @@
      * Interface representing the shape of a SlashDB DBDef object.
      */
     interface ISlashDBDef {
+        'db_id': string,
         'db_encoding': string;
         'owners': string[];
         'execute': string[];
@@ -72,6 +73,7 @@
      * Interface representing the shape of a SlashDB UserDef object.
      */
     interface ISlashDBUserDef {
+        'user_id': string,
         'userdef': string[],
         'api_key': string,
         'name': string,
@@ -91,6 +93,7 @@
      * Interface representing the shape of a SlashDB QueryDef object.
      */
     interface ISlashDBQueryDef {
+        'query_id': string,
         'owners': string[];
         'viewable': boolean;
         'creator': string;
@@ -354,10 +357,9 @@
             return promise;
         }
 
-        createDBDef(dbName: string, data: ISlashDBDef) {
+        createDBDef(data: ISlashDBDef) {
             // create a new database definition
-            let sdbUrl: string = `/dbdef/${dbName}.json`;
-            return this.post(sdbUrl, data);
+            return this.post('/dbdef.json', data);
         }
 
         updateDBDef(dbName: string, data: ISlashDBDef) {
@@ -410,10 +412,9 @@
             return promise;
         }
 
-        createUserDef(userName: string, data: ISlashDBUserDef) {
+        createUserDef(data: ISlashDBUserDef) {
             // create a new user definition
-            let sdbUrl: string = `/userdef/${userName}.json`;
-            return this.post(sdbUrl, data);
+            return this.post('/userdef.json', data);
         }
 
         updateUserDef(userName: string, data: ISlashDBUserDef) {
@@ -466,10 +467,9 @@
             return promise;
         }
 
-        createQueryDef(queryName: string, data: ISlashDBUserDef) {
+        createQueryDef(data: ISlashDBUserDef) {
             // create a new query definition
-            let sdbUrl: string = `/querydef/${queryName}.json`;
-            return this.post(sdbUrl, data);
+            return this.post('/querydef.json`', data);
         }
 
         updateQueryDef(queryName: string, data: ISlashDBUserDef) {

@@ -175,9 +175,8 @@
             }
             return promise;
         };
-        SlashDBService.prototype.createDBDef = function (dbName, data) {
-            var sdbUrl = "/dbdef/" + dbName + ".json";
-            return this.post(sdbUrl, data);
+        SlashDBService.prototype.createDBDef = function (data) {
+            return this.post('/dbdef.json', data);
         };
         SlashDBService.prototype.updateDBDef = function (dbName, data) {
             var sdbUrl = "/dbdef/" + dbName + ".json";
@@ -224,9 +223,8 @@
             }
             return promise;
         };
-        SlashDBService.prototype.createUserDef = function (userName, data) {
-            var sdbUrl = "/userdef/" + userName + ".json";
-            return this.post(sdbUrl, data);
+        SlashDBService.prototype.createUserDef = function (data) {
+            return this.post('/userdef.json', data);
         };
         SlashDBService.prototype.updateUserDef = function (userName, data) {
             var sdbUrl = "/userdef/" + userName + ".json";
@@ -273,9 +271,8 @@
             }
             return promise;
         };
-        SlashDBService.prototype.createQueryDef = function (queryName, data) {
-            var sdbUrl = "/querydef/" + queryName + ".json";
-            return this.post(sdbUrl, data);
+        SlashDBService.prototype.createQueryDef = function (data) {
+            return this.post('/querydef.json`', data);
         };
         SlashDBService.prototype.updateQueryDef = function (queryName, data) {
             var sdbUrl = "/querydef/" + queryName + ".json";

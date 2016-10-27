@@ -527,6 +527,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newDBDef might have a diffrent 'shape' on your version of SlashDB
     var newDBDef = {
+        'db_id': 'newDBDef',
         'db_encoding': 'utf-8',
         'owners': ['admin'],
         'execute': [],
@@ -546,7 +547,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         'desc': '';
     };
     // create a new DB definition
-    slashdb.createDBDef('newDBDef', newDBDef).then(function() {
+    slashdb.createDBDef(newDBDef).then(function() {
         console.log('new db def created!');
     });
     // update definition
@@ -584,6 +585,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newUserDef might have a diffrent 'shape' on your version of SlashDB
     var newUserDef = {
+        'user_id': 'newUserDef',
         'userdef': ['newUserDef'],
         'api_key': 'somekey',
         'name': 'newQueryDef',
@@ -597,7 +599,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         'view': '';
     };
     // create a new User definition
-    slashdb.createDBDef('newUserDef', newUserDef).then(function() {
+    slashdb.createDBDef(newUserDef).then(function() {
         console.log('new user def created!');
     });
     // update definition
@@ -635,6 +637,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
 exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newQueryDef might have a diffrent 'shape' on your version of SlashDB
     var newQueryDef = {
+        'query_id': 'newQueryDef',
         'owners': ['me'],
         'viewable': true,
         'creator': 'me',
@@ -647,7 +650,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         'columns': 'Name'
     };
     // create a new Query definition
-    slashdb.createDBDef('newQueryDef', newQueryDef).then(function() {
+    slashdb.createDBDef(newQueryDef).then(function() {
         console.log('new query def created!');
     });
     // update definition
