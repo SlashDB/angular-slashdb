@@ -301,14 +301,19 @@
             return this.post('/license', fd, userRequestConfig);
         }
 
-        loadModel(dbName: string) {
+        dbOn(dbName: string) {
             // connects a given database on the backend
             return this.get(`/load-model/${dbName}.json`);
         }
 
-        unloadModel(dbName: string) {
+        dbOff(dbName: string) {
             // disconnects a given database on the backend
             return this.get(`/unload-model/${dbName}.json`);
+        }
+
+        toggleDB(dbName: string) {
+            // toggles DB state i.e. On -> Off, and vice versa
+            return this.dbDefs[dbName].connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         }
 
         getDBDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {

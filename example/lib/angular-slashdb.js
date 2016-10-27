@@ -129,11 +129,14 @@
             fd.append('license', licFile);
             return this.post('/license', fd, userRequestConfig);
         };
-        SlashDBService.prototype.loadModel = function (dbName) {
+        SlashDBService.prototype.dbOn = function (dbName) {
             return this.get("/load-model/" + dbName + ".json");
         };
-        SlashDBService.prototype.unloadModel = function (dbName) {
+        SlashDBService.prototype.dbOff = function (dbName) {
             return this.get("/unload-model/" + dbName + ".json");
+        };
+        SlashDBService.prototype.toggleDB = function (dbName) {
+            return this.dbDefs[dbName].connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         };
         SlashDBService.prototype.getDBDefs = function (force) {
             var _this = this;

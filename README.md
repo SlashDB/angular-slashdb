@@ -66,7 +66,8 @@ see [example application](https://slashdb.github.io/angular-slashdb/) folder for
             - [logout](#logout)
             - [isAuthenticated](#isauthenticated)
             - [uploadLicense](#uploadlicense)
-            - [loadModel and unloadModel](#loadmodel-and-unloadmodel)
+            - [dbOn and dbOff](#dbOn-and-dbOff)
+            - [toggleDB](#dbToggle)
             - [getDBDefs and getDBDef](#getdbdefs-and-getdbdef)
             - [createDBDef, updateDBDef and deleteDBDef](#createdbdef-updatedbdef-and-deletedbdef)
             - [getUserDefs and getUserDef](#getuserdefs-and-getuserdef)
@@ -478,14 +479,25 @@ exampleApp.component('myComponent', {
 ```
 **[Back to top](#table-of-contents)**
 
-#### loadModel and unloadModel
-* _loadModel_ - connects a given database on the backend
-* _unloadModel_ - disconnects a given database on the backend
+#### dbOn and dbOff
+* _dbOn_ - connects a given database on the backend
+* _dbOff_ - disconnects a given database on the backend
 
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
-    slashDB.loadModel();    // returns a Promise for further use
-    slashDB.unloadModel();  // returns a Promise for further use
+    slashDB.dbOff('testDB');  // returns a Promise for further use
+    slashDB.dbOn('testDB');   // returns a Promise for further use
+    return {};
+}])
+```
+**[Back to top](#table-of-contents)**
+
+#### toggleDB
+Toggles given DB-s state i.e. On -> Off, and vice versa.
+
+```javascript
+exampleApp.service('myService', ['slashDB', function (slashDB) {
+    slashDB.toggleDB('testDB');  // returns a Promise for further use
     return {};
 }])
 ```
