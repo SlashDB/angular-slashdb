@@ -1,4 +1,4 @@
-(function () {
+(() => {
     'use strict';
 
     /**
@@ -314,9 +314,10 @@
             return this.get(`/unload-model/${dbName}.json`);
         }
 
-        toggleDB(dbName: string) {
+        toggleDB(dbDef: ISlashDBDef, dbIDName: string = 'db_id') {
             // toggles DB state i.e. On -> Off, and vice versa
-            return this.dbDefs[dbName].connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
+            let dbName = dbDef[dbIDName];
+            return dbDef.connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         }
 
         getDBDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {
@@ -331,9 +332,9 @@
                 })
             } else {
                 promise = this.get('/dbdef.json').then(
-                    function (response) {
+                    (response) => {
                         if (response.status == 200) {
-                            this.dbDefs = response.data;
+                            this.dbDefs = response.data[0];
                         }
                         return response;
                     });
@@ -386,9 +387,9 @@
                 })
             } else {
                 promise = this.get('/userdef.json').then(
-                    function (response) {
+                    (response) => {
                         if (response.status == 200) {
-                            this.userDefs = response.data;
+                            this.userDefs = response.data[0];
                         }
                         return response;
                     });
@@ -441,9 +442,9 @@
                 })
             } else {
                 promise = this.get('/querydef.json').then(
-                    function (response) {
+                    (response) => {
                         if (response.status == 200) {
-                            this.queryDefs = response.data;
+                            this.queryDefs = response.data[0];
                         }
                         return response;
                     });
@@ -469,7 +470,7 @@
 
         createQueryDef(data: ISlashDBUserDef) {
             // create a new query definition
-            return this.post('/querydef.json`', data);
+            return this.post('/querydef.json', data);
         }
 
         updateQueryDef(queryName: string, data: ISlashDBUserDef) {
@@ -502,9 +503,9 @@
                 })
             } else {
                 promise = this.get('/query.json').then(
-                    function (response) {
+                    (response) => {
                         if (response.status == 200) {
-                            this.passThruQueries = response.data;
+                            this.passThruQueries = response.data[0];
                         }
                         return response;
                     });

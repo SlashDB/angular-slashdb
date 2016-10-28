@@ -497,8 +497,10 @@ Toggles given DB-s state i.e. On -> Off, and vice versa.
 
 ```javascript
 exampleApp.service('myService', ['slashDB', function (slashDB) {
-    slashDB.toggleDB('testDB');  // returns a Promise for further use
-    return {};
+    slashDB.getDBDefs.then(function () {
+        var dbDef = SlashDB.dbDefs['myDB'];
+        slashDB.toggleDB(dbDef);  // returns a Promise for further use
+    });
 }])
 ```
 **[Back to top](#table-of-contents)**

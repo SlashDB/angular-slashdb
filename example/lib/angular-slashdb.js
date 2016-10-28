@@ -135,8 +135,10 @@
         SlashDBService.prototype.dbOff = function (dbName) {
             return this.get("/unload-model/" + dbName + ".json");
         };
-        SlashDBService.prototype.toggleDB = function (dbName) {
-            return this.dbDefs[dbName].connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
+        SlashDBService.prototype.toggleDB = function (dbDef, dbIDName) {
+            if (dbIDName === void 0) { dbIDName = 'db_id'; }
+            var dbName = dbDef[dbIDName];
+            return dbDef.connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         };
         SlashDBService.prototype.getDBDefs = function (force) {
             var _this = this;
@@ -152,7 +154,7 @@
             else {
                 promise = this.get('/dbdef.json').then(function (response) {
                     if (response.status == 200) {
-                        this.dbDefs = response.data;
+                        _this.dbDefs = response.data[0];
                     }
                     return response;
                 });
@@ -200,7 +202,7 @@
             else {
                 promise = this.get('/userdef.json').then(function (response) {
                     if (response.status == 200) {
-                        this.userDefs = response.data;
+                        _this.userDefs = response.data[0];
                     }
                     return response;
                 });
@@ -248,7 +250,7 @@
             else {
                 promise = this.get('/querydef.json').then(function (response) {
                     if (response.status == 200) {
-                        this.queryDefs = response.data;
+                        _this.queryDefs = response.data[0];
                     }
                     return response;
                 });
@@ -272,7 +274,7 @@
             return promise;
         };
         SlashDBService.prototype.createQueryDef = function (data) {
-            return this.post('/querydef.json`', data);
+            return this.post('/querydef.json', data);
         };
         SlashDBService.prototype.updateQueryDef = function (queryName, data) {
             var sdbUrl = "/querydef/" + queryName + ".json";
@@ -299,7 +301,7 @@
             else {
                 promise = this.get('/query.json').then(function (response) {
                     if (response.status == 200) {
-                        this.passThruQueries = response.data;
+                        _this.passThruQueries = response.data[0];
                     }
                     return response;
                 });
