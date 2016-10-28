@@ -162,7 +162,7 @@
         };
 
         var service = {
-            baseUrl: '/db/SQLiteChinook/ExampleArtist',
+            baseUrl: '/db/Chinook/ExampleArtist',
             requestConfig: {
                 params: angular.copy(defaultParams)
             },
