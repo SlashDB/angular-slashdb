@@ -314,10 +314,9 @@
             return this.get(`/unload-model/${dbName}.json`);
         }
 
-        toggleDB(dbDef: ISlashDBDef, dbIDName: string = 'db_id') {
+        toggleDB(dbName: string, connectStatus: string) {
             // toggles DB state i.e. On -> Off, and vice versa
-            let dbName = dbDef[dbIDName];
-            return dbDef.connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
+            return connectStatus == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         }
 
         getDBDefs(force: boolean = false): angular.IPromise<any> | angular.IHttpPromise<{}> {

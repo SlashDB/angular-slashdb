@@ -135,10 +135,8 @@
         SlashDBService.prototype.dbOff = function (dbName) {
             return this.get("/unload-model/" + dbName + ".json");
         };
-        SlashDBService.prototype.toggleDB = function (dbDef, dbIDName) {
-            if (dbIDName === void 0) { dbIDName = 'db_id'; }
-            var dbName = dbDef[dbIDName];
-            return dbDef.connect_status == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
+        SlashDBService.prototype.toggleDB = function (dbName, connectStatus) {
+            return connectStatus == 'Connected' ? this.dbOff(dbName) : this.dbOn(dbName);
         };
         SlashDBService.prototype.getDBDefs = function (force) {
             var _this = this;
