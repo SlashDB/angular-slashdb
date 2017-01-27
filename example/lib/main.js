@@ -162,7 +162,7 @@
             };
 
             var service = {
-                baseUrl: '/db/Chinook/Artist',
+                baseUrl: '/db/Chinook/ExampleArtist',
                 requestConfig: {
                     params: angular.copy(defaultParams)
                 },
