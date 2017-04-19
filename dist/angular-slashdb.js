@@ -306,33 +306,42 @@
             }
             return promise;
         };
-        SlashDBService.prototype.executeQuery = function (url, userRequestConfig, force, asArray) {
+        SlashDBService.prototype.executeQuery = function (url, httpMethod, data, userRequestConfig, force, asArray) {
             var _this = this;
             if (userRequestConfig === void 0) { userRequestConfig = {}; }
             if (force === void 0) { force = false; }
             if (asArray === void 0) { asArray = true; }
-            var sdbUrl = this.config.endpoint + "/query" + url;
+            var baseUrl = "/query" + url;
+            var cacheUrl = this.getUrl(baseUrl);
             var promise;
-            var data, response;
-            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
+            var response;
+            if (httpMethod == 'GET' && this.config.cacheData && !force && this.storage.getItem(cacheUrl) != null) {
                 promise = this.$q(function (resolve, reject) {
-                    response = JSON.parse(_this.storage.getItem(sdbUrl));
+                    response = JSON.parse(_this.storage.getItem(cacheUrl));
                     resolve(response);
                 });
             }
             else {
-                var requestConfig = this.updateRequestConfig(userRequestConfig);
-                promise = this.$http.get(sdbUrl, requestConfig)
-                    .then(function (response) {
-                    if (response.status == 200) {
-                        data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
-                        response.data = data;
-                        if (_this.config.cacheData) {
-                            _this.storage.setItem(sdbUrl, JSON.stringify(response));
-                        }
-                    }
-                    return response;
-                });
+                switch (httpMethod) {
+                    case 'POST':
+                        promise = this.post(baseUrl, data, userRequestConfig);
+                    case 'PUT':
+                        promise = this.put(baseUrl, data, userRequestConfig);
+                    case 'DELETE':
+                        promise = this.delete(baseUrl, userRequestConfig);
+                    default:
+                        promise = this.get(baseUrl, userRequestConfig)
+                            .then(function (response) {
+                            if (response.status == 200) {
+                                data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
+                                response.data = data;
+                                if (_this.config.cacheData) {
+                                    _this.storage.setItem(cacheUrl, JSON.stringify(response));
+                                }
+                            }
+                            return response;
+                        });
+                }
             }
             return promise;
         };
@@ -389,9 +398,9 @@
             var requestConfig = this.updateRequestConfig(userRequestConfig);
             return this.$http.delete(sdbUrl, requestConfig);
         };
-        SlashDBService.$inject = ['$http', '$q', '$cookies', '$rootScope'];
         return SlashDBService;
     }());
+    SlashDBService.$inject = ['$http', '$q', '$cookies', '$rootScope'];
     var SlashDBServiceProvider = (function () {
         function SlashDBServiceProvider() {
             this.config = {

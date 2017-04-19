@@ -512,31 +512,42 @@
             return promise;
         }
 
-        executeQuery(url: string, userRequestConfig: {} = {}, force: boolean = false, asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
+        executeQuery(url: string, httpMethod: string, data: any,
+            userRequestConfig: {} = {}, force: boolean = false,
+            asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // execute SQL Pass-thru query
-            let sdbUrl = `${this.config.endpoint}/query${url}`;
+            let baseUrl = `/query${url}`;
+            let cacheUrl = this.getUrl(baseUrl);
             let promise: angular.IPromise<any> | angular.IHttpPromise<{}>;
-            let data, response: any;
+            let response: any;
 
-            if (this.config.cacheData && !force && this.storage.getItem(sdbUrl) != null) {
+            if (httpMethod == 'GET' && this.config.cacheData && !force && this.storage.getItem(cacheUrl) != null) {
                 promise = this.$q((resolve, reject): void => {
-                    response = JSON.parse(this.storage.getItem(sdbUrl));
+                    response = JSON.parse(this.storage.getItem(cacheUrl));
                     resolve(response);
                 })
             } else {
-                let requestConfig = this.updateRequestConfig(userRequestConfig);
-                promise = this.$http.get(sdbUrl, requestConfig)
-                    .then((response): {} => {
-                        if (response.status == 200) {
-                            data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
-                            response.data = data;
+                switch (httpMethod) {
+                    case 'POST':
+                        promise = this.post(baseUrl, data, userRequestConfig);
+                    case 'PUT':
+                        promise = this.put(baseUrl, data, userRequestConfig);
+                    case 'DELETE':
+                        promise = this.delete(baseUrl, userRequestConfig);
+                    default:
+                        promise = this.get(baseUrl, userRequestConfig)
+                            .then((response): {} => {
+                                if (response.status == 200) {
+                                    data = (!Array.isArray(response.data) && asArray) ? [response.data] : response.data;
+                                    response.data = data;
 
-                            if (this.config.cacheData) {
-                                this.storage.setItem(sdbUrl, JSON.stringify(response));
-                            }
-                        }
-                        return response;
-                    });
+                                    if (this.config.cacheData) {
+                                        this.storage.setItem(cacheUrl, JSON.stringify(response));
+                                    }
+                                }
+                                return response;
+                            });
+                }
             }
             return promise
         }
