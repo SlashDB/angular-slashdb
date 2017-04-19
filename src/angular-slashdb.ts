@@ -512,7 +512,7 @@
             return promise;
         }
 
-        executeQuery(url: string, httpMethod: string, data: any,
+        executeQuery(url: string, httpMethod: string = 'GET', data: any = {},
             userRequestConfig: {} = {}, force: boolean = false,
             asArray: boolean = true): angular.IPromise<any> | angular.IHttpPromise<{}> {
             // execute SQL Pass-thru query

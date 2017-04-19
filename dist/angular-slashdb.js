@@ -308,6 +308,8 @@
         };
         SlashDBService.prototype.executeQuery = function (url, httpMethod, data, userRequestConfig, force, asArray) {
             var _this = this;
+            if (httpMethod === void 0) { httpMethod = 'GET'; }
+            if (data === void 0) { data = {}; }
             if (userRequestConfig === void 0) { userRequestConfig = {}; }
             if (force === void 0) { force = false; }
             if (asArray === void 0) { asArray = true; }
