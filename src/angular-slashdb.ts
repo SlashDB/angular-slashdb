@@ -530,10 +530,13 @@
                 switch (httpMethod) {
                     case 'POST':
                         promise = this.post(baseUrl, data, userRequestConfig);
+                        break;
                     case 'PUT':
                         promise = this.put(baseUrl, data, userRequestConfig);
+                        break;
                     case 'DELETE':
                         promise = this.delete(baseUrl, userRequestConfig);
+                        break;
                     default:
                         promise = this.get(baseUrl, userRequestConfig)
                             .then((response): {} => {
