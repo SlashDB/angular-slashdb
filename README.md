@@ -647,16 +647,16 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newQueryDef might have a diffrent 'shape' on your version of SlashDB
     var newQueryDef = {
         'query_id': 'newQueryDef',
-        'owners': ['me'],
-        'viewable': true,
         'creator': 'me',
-        'read': [],
+        'read': ['me'],
         'database': 'someDB',
-        'execute': [],
-        'write': [],
-        'sqlstr': '',
-        'executable': true,
-        'columns': 'Name'
+        'execute': ['me'],
+        'write': ['me'],
+        "http_methods": {
+            "GET": true,
+        },
+        'sqlstr': 'select * from Customer',
+        'desc': 'new query def'
     };
     // create a new Query definition
     slashdb.createDBDef(newQueryDef).then(function() {
