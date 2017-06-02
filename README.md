@@ -531,22 +531,29 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     var newDBDef = {
         'db_id': 'newDBDef',
         'db_encoding': 'utf-8',
-        'owners': ['admin'],
-        'execute': [],
+        'owners': [
+            'admin'
+        ],
         'creator': 'admin',
         'read': [],
-        'db_type': 'sqllite3',
-        'autoload': false,
-        'write': [];
-        'connect_status': '',
-        'connection': '',
+        'editable': true,
+        'db_type': 'sqlite',
+        'executable': true,
+        'autoload_user': {
+            'dbuser': 'admin',
+            'dbpass': 'admin'
+        },
+        'autoload': true,
+        'viewable': true,
+        'write': [],
+        'connection': '/my/path/mydb.sqlite',
         'foreign_keys': {},
-        'sysuser': {'dbuser': 'admin', 'dbpass': 'admin'},
-        'db_schema': '',
+        'execute': [],
+        'db_schema': null,
         'offline': false,
         'alternate_key': {},
         'excluded_columns': {},
-        'desc': '';
+        'desc': 'my sqlite db'
     };
     // create a new DB definition
     slashdb.createDBDef(newDBDef).then(function() {
