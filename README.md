@@ -595,17 +595,22 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
     // newUserDef might have a diffrent 'shape' on your version of SlashDB
     var newUserDef = {
         'user_id': 'newUserDef',
-        'userdef': ['newUserDef'],
+        'userdef': [],
         'api_key': 'somekey',
         'name': 'newQueryDef',
         'creator': 'admin',
         'edit': [];
-        'dbdef': ['someDBDef'];
-        'querydef': [];
-        'databases': {'dbuser': 'me', 'dbpass': 'mypass'},
+        'dbdef': ['create', 'view']; // user can view and create DB definitions
+        'querydef': [];              
+        'databases': {
+            'Chinook': {
+                'dbuser': 'me',
+                'dbpass': 'mypass'
+            }
+        },
         'password': 'mypass';
         'email': 'me@me.com';
-        'view': '';
+        'view': []
     };
     // create a new User definition
     slashdb.createDBDef(newUserDef).then(function() {
