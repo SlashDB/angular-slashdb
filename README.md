@@ -663,7 +663,7 @@ exampleApp.service('myService', ['slashDB', function (slashDB) {
         console.log('new query def created!');
     });
     // update definition
-    slashdb.updateDBDef('newQueryDef', {'email': 'newMe@me.com'});
+    slashdb.updateDBDef('newQueryDef', {'desc': 'different desc'});
     // delete definition
     slashdb.deleteDBDef('newQueryDef').then(function() {
         console.log('it is gone!');
