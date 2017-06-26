@@ -128,6 +128,8 @@
 
                     var itemUrl = config.baseUrl + itemEndpoint + '.json';
                     if (slashDB.isAuthenticated()) {
+                        var requestConfig = angular.extend({}, config.requestConfig);
+                        delete requestConfig['sort'];
                         slashDB.put(itemUrl, data, config.requestConfig).then(successCallback, function (r) {
                             console.log(r);
                             console.log('reloading data');
