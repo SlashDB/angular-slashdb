@@ -357,7 +357,8 @@
         // edit item widget
         .component('editWidget', {
             template: '\
-            <span ng-dblclick="$ctrl.focusInput()" ng-show="!$ctrl.editing" class="text-primary hand-cursor">{{ $ctrl.content }}</span>\
+            <span ng-dblclick="$ctrl.focusInput()" ng-show="!$ctrl.editing" class="text-primary hand-cursor" title="Double click to edit artist name">{{ $ctrl.content }}</span>\
+            <span ng-click="$ctrl.focusInput()" class="glyphicon glyphicon-pencil text-primary hand-cursor" title="Click to edit artist name" aria-hidden="true" ng-show="!$ctrl.editing"></span>\
             <form ng-show="$ctrl.editing" ng-submit="$ctrl.onSave()" class="form-inline" ng-keydown="($event.which == 27)?$ctrl.endEditing():0">\
                 <div class="input-group input-group-sm">\
                     <input type="text" class="form-control" ng-model="$ctrl.content">\
